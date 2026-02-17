@@ -19,6 +19,9 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        manifestPlaceholders["auth0Domain"] = "dev-gn2n1o1su8462o8c.us.auth0.com"
+        manifestPlaceholders["auth0Scheme"] = "com.example.socialhub"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
