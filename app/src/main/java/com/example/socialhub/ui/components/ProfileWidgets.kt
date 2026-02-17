@@ -1,0 +1,100 @@
+package com.example.socialhub.ui.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+@Composable
+fun ProfileHeader(
+    name: String,
+    handle: String,
+    bio: String,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(22.dp),
+        color = AppColors.Carbon
+    ) {
+        Column(modifier = Modifier.padding(18.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(72.dp)
+                        .clip(CircleShape)
+                        .background(AppColors.Accent)
+                )
+                Spacer(modifier = Modifier.size(16.dp))
+                Column {
+                    Text(
+                        text = name,
+                        fontFamily = FontFamily.Serif,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp,
+                        color = AppColors.Sand
+                    )
+                    Text(
+                        text = handle,
+                        fontFamily = FontFamily.Monospace,
+                        fontSize = 12.sp,
+                        color = AppColors.Slate
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = bio,
+                fontFamily = FontFamily.SansSerif,
+                fontSize = 13.sp,
+                color = AppColors.Sand
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                ProfileStat(label = "Posts", value = "348")
+                ProfileStat(label = "Followers", value = "12.4k")
+                ProfileStat(label = "Following", value = "216")
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProfileStat(label: String, value: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = value,
+            fontFamily = FontFamily.Serif,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            color = AppColors.Sand
+        )
+        Text(
+            text = label,
+            fontFamily = FontFamily.Monospace,
+            fontSize = 11.sp,
+            color = AppColors.Slate
+        )
+    }
+}
