@@ -47,20 +47,20 @@ fun CreateUserScreen() {
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.Bold,
                 fontSize = 26.sp,
-                color = AppColors.Sand
+                color = AppColors.WhiteText
             )
             Text(
                 text = "Or keep it light and join as a guest.",
                 fontFamily = FontFamily.Monospace,
                 fontSize = 12.sp,
-                color = AppColors.Slate
+                color = AppColors.ViridianText
             )
             Spacer(modifier = Modifier.height(16.dp))
             Spacer(
                 modifier = Modifier
                     .size(92.dp)
                     .clip(CircleShape)
-                    .background(AppColors.Aqua)
+                    .background(AppColors.AccentAqua)
             )
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
@@ -86,20 +86,20 @@ fun CreateUserScreen() {
             Spacer(modifier = Modifier.height(18.dp))
             Button(
                 onClick = { },
-                colors = ButtonDefaults.buttonColors(containerColor = AppColors.Accent),
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.AccentAzure),
                 shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Create profile", color = AppColors.Carbon)
+                Text("Create profile", color = AppColors.Gradient2)
             }
             Spacer(modifier = Modifier.height(12.dp))
             Button(
                 onClick = { },
-                colors = ButtonDefaults.buttonColors(containerColor = AppColors.Carbon),
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.Gradient2),
                 shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Continue as guest", color = AppColors.Sand)
+                Text("Continue as guest", color = AppColors.WhiteText)
             }
             Spacer(modifier = Modifier.height(100.dp))
         }

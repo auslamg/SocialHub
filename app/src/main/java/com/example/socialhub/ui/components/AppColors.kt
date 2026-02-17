@@ -1,6 +1,6 @@
 package com.example.socialhub.ui.components
 
-import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -18,13 +18,18 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 object AppColors {
-    val Ink = Color(0xFF0E0F12)
-    val Carbon = Color(0xFF151A21)
-    val Slate = Color(0xFFB0BAC7)
-    val Sand = Color(0xFFF4F1EC)
-    val Accent = Color(0xFFFF6A3D)
-    val Aqua = Color(0xFF4CE0D2)
-    val Plum = Color(0xFF3A2F4E)
+    val Gradient1 = Color(0xFF222A3B)
+    val Gradient2 = Color(0xFF1D3D59)
+    val Gradient3 = Color(0xFF25475D)
+
+    val PostCardBG = Color(0xFF1E1F22)
+
+    val WhiteText = Color(0xFFFFFBE9)
+    val GreyText = Color(0xFFB3D2CE)
+    val ViridianText = Color(0xFF93F1E5)
+
+    val AccentAzure = Color(0xFF3D9BFF)
+    val AccentAqua = Color(0xFF4CE0D2)
 }
 
 @Composable
@@ -34,18 +39,24 @@ fun AnimatedGradientBackground(
 ) {
     val transition = rememberInfiniteTransition(label = "bg")
     val shift by transition.animateFloat(
-        initialValue = 0.1f,
-        targetValue = 0.9f,
+        initialValue = 0f,
+        targetValue = 3f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 12000, easing = LinearEasing),
+            animation = tween(durationMillis = 12000, easing = EaseInOut),
             repeatMode = RepeatMode.Reverse
         ),
         label = "shift"
     )
     val brush = Brush.linearGradient(
-        colors = listOf(AppColors.Ink, AppColors.Plum, AppColors.Carbon),
+        colors = listOf(
+            AppColors.Gradient1,
+            AppColors.Gradient2,
+            AppColors.Gradient3,
+            AppColors.Gradient2,
+            AppColors.Gradient1
+        ),
         start = Offset(0f, 200f * shift),
-        end = Offset(900f, 700f + 200f * shift)
+        end = Offset(1800f, 1800f + 200f * shift)
     )
     Box(
         modifier = modifier

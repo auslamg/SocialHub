@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,7 +34,7 @@ fun PostCard(
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(18.dp),
-        color = AppColors.Carbon
+        color = AppColors.PostCardBG
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -43,7 +42,7 @@ fun PostCard(
                     modifier = Modifier
                         .size(44.dp)
                         .clip(CircleShape)
-                        .background(AppColors.Aqua)
+                        .background(AppColors.AccentAqua)
                 )
                 Spacer(modifier = Modifier.size(12.dp))
                 Column {
@@ -52,13 +51,13 @@ fun PostCard(
                         fontFamily = FontFamily.Serif,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
-                        color = AppColors.Sand
+                        color = AppColors.WhiteText
                     )
                     Text(
                         text = handle,
                         fontFamily = FontFamily.Monospace,
                         fontSize = 12.sp,
-                        color = AppColors.Slate
+                        color = AppColors.ViridianText
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -66,7 +65,7 @@ fun PostCard(
                     text = stamp,
                     fontFamily = FontFamily.Monospace,
                     fontSize = 11.sp,
-                    color = AppColors.Slate
+                    color = AppColors.GreyText
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -74,17 +73,17 @@ fun PostCard(
                 text = body,
                 fontFamily = FontFamily.SansSerif,
                 fontSize = 14.sp,
-                color = AppColors.Sand
+                color = AppColors.WhiteText
             )
             Spacer(modifier = Modifier.height(14.dp))
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Reply", fontFamily = FontFamily.Monospace, color = AppColors.Slate)
-                Text("Repost", fontFamily = FontFamily.Monospace, color = AppColors.Slate)
-                Text("Like", fontFamily = FontFamily.Monospace, color = AppColors.Slate)
-                Text("Share", fontFamily = FontFamily.Monospace, color = AppColors.Slate)
+                Text("Reply", fontFamily = FontFamily.Monospace, color = AppColors.GreyText)
+                Text("Repost", fontFamily = FontFamily.Monospace, color = AppColors.GreyText)
+                Text("Like", fontFamily = FontFamily.Monospace, color = AppColors.GreyText)
+                Text("Share", fontFamily = FontFamily.Monospace, color = AppColors.GreyText)
             }
         }
     }

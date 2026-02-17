@@ -45,20 +45,20 @@ fun CreatePostScreen() {
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.Bold,
                 fontSize = 26.sp,
-                color = AppColors.Sand
+                color = AppColors.WhiteText
             )
             Text(
                 text = "Thoughts under 280 characters.",
                 fontFamily = FontFamily.Monospace,
                 fontSize = 12.sp,
-                color = AppColors.Slate
+                color = AppColors.ViridianText
             )
             Spacer(modifier = Modifier.height(16.dp))
             Spacer(
                 modifier = Modifier
                     .size(64.dp)
                     .clip(CircleShape)
-                    .background(AppColors.Accent)
+                    .background(AppColors.AccentAzure)
             )
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
@@ -74,16 +74,16 @@ fun CreatePostScreen() {
                 text = "${content.length}/280",
                 fontFamily = FontFamily.Monospace,
                 fontSize = 12.sp,
-                color = AppColors.Slate
+                color = AppColors.ViridianText
             )
             Spacer(modifier = Modifier.height(18.dp))
             Button(
                 onClick = { },
-                colors = ButtonDefaults.buttonColors(containerColor = AppColors.Aqua),
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.AccentAqua),
                 shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Post now", color = AppColors.Carbon)
+                Text("Post now", color = AppColors.Gradient2)
             }
             Spacer(modifier = Modifier.height(100.dp))
         }

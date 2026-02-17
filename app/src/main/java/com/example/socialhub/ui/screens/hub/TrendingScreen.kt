@@ -34,19 +34,19 @@ fun TrendingScreen() {
                     fontFamily = FontFamily.Serif,
                     fontWeight = FontWeight.Bold,
                     fontSize = 26.sp,
-                    color = AppColors.Sand
+                    color = AppColors.WhiteText
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Box(
                     modifier = Modifier
-                        .background(AppColors.Accent, shape = androidx.compose.foundation.shape.RoundedCornerShape(999.dp))
+                        .background(AppColors.AccentAzure, shape = androidx.compose.foundation.shape.RoundedCornerShape(999.dp))
                         .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
                     Text(
                         text = "LIVE",
                         fontFamily = FontFamily.Monospace,
                         fontSize = 11.sp,
-                        color = AppColors.Carbon
+                        color = AppColors.Gradient2
                     )
                 }
             }
@@ -54,7 +54,7 @@ fun TrendingScreen() {
                 text = "Most-loved posts across the network.",
                 fontFamily = FontFamily.Monospace,
                 fontSize = 12.sp,
-                color = AppColors.Slate
+                color = AppColors.ViridianText
             )
             Spacer(modifier = Modifier.height(16.dp))
             LazyColumn(verticalArrangement = Arrangement.spacedBy(14.dp)) {

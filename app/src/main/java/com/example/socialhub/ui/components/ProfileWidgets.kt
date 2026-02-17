@@ -33,7 +33,7 @@ fun ProfileHeader(
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(22.dp),
-        color = AppColors.Carbon
+        color = AppColors.Gradient2
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -41,7 +41,7 @@ fun ProfileHeader(
                     modifier = Modifier
                         .size(72.dp)
                         .clip(CircleShape)
-                        .background(AppColors.Accent)
+                        .background(AppColors.AccentAzure)
                 )
                 Spacer(modifier = Modifier.size(16.dp))
                 Column {
@@ -50,13 +50,13 @@ fun ProfileHeader(
                         fontFamily = FontFamily.Serif,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 20.sp,
-                        color = AppColors.Sand
+                        color = AppColors.WhiteText
                     )
                     Text(
                         text = handle,
                         fontFamily = FontFamily.Monospace,
                         fontSize = 12.sp,
-                        color = AppColors.Slate
+                        color = AppColors.ViridianText
                     )
                 }
             }
@@ -65,7 +65,7 @@ fun ProfileHeader(
                 text = bio,
                 fontFamily = FontFamily.SansSerif,
                 fontSize = 13.sp,
-                color = AppColors.Sand
+                color = AppColors.WhiteText
             )
             Spacer(modifier = Modifier.height(16.dp))
             Row(
@@ -88,13 +88,13 @@ private fun ProfileStat(label: String, value: String) {
             fontFamily = FontFamily.Serif,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
-            color = AppColors.Sand
+            color = AppColors.WhiteText
         )
         Text(
             text = label,
             fontFamily = FontFamily.Monospace,
             fontSize = 11.sp,
-            color = AppColors.Slate
+            color = AppColors.ViridianText
         )
     }
 }

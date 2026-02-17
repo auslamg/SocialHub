@@ -31,13 +31,13 @@ fun ProfileScreen() {
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.Bold,
                 fontSize = 26.sp,
-                color = AppColors.Sand
+                color = AppColors.WhiteText
             )
             Text(
                 text = "Instagram-style grid with highlights.",
                 fontFamily = FontFamily.Monospace,
                 fontSize = 12.sp,
-                color = AppColors.Slate
+                color = AppColors.ViridianText
             )
             Spacer(modifier = Modifier.height(16.dp))
             ProfileHeader(
@@ -50,7 +50,7 @@ fun ProfileScreen() {
                 text = "Recent",
                 fontFamily = FontFamily.Monospace,
                 fontSize = 12.sp,
-                color = AppColors.Slate
+                color = AppColors.ViridianText
             )
             Spacer(modifier = Modifier.height(10.dp))
             LazyVerticalGrid(
@@ -63,7 +63,7 @@ fun ProfileScreen() {
                     Spacer(
                         modifier = Modifier
                             .height(96.dp)
-                            .background(AppColors.Carbon, RoundedCornerShape(12.dp))
+                            .background(AppColors.Gradient2, RoundedCornerShape(12.dp))
                     )
                 }
             }

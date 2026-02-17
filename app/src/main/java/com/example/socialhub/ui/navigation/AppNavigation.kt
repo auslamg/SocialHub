@@ -2,7 +2,6 @@ package com.example.socialhub.ui.navigation
 
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,11 +25,11 @@ sealed class AppDestination(
 
     @Composable
     fun navColors() = NavigationBarItemDefaults.colors(
-        selectedIconColor = AppColors.Sand,
-        selectedTextColor = AppColors.Sand,
-        unselectedIconColor = AppColors.Slate,
-        unselectedTextColor = AppColors.Slate,
-        indicatorColor = AppColors.Carbon
+        selectedIconColor = AppColors.WhiteText,
+        selectedTextColor = AppColors.WhiteText,
+        unselectedIconColor = AppColors.ViridianText,
+        unselectedTextColor = AppColors.ViridianText,
+        indicatorColor = AppColors.Gradient2
     )
 }
 

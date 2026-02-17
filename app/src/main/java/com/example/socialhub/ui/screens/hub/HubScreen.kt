@@ -29,13 +29,13 @@ fun HubScreen() {
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.Bold,
                 fontSize = 26.sp,
-                color = AppColors.Sand
+                color = AppColors.WhiteText
             )
             Text(
                 text = "Infinite feed, straight from your circle.",
                 fontFamily = FontFamily.Monospace,
                 fontSize = 12.sp,
-                color = AppColors.Slate
+                color = AppColors.ViridianText
             )
             Spacer(modifier = Modifier.height(16.dp))
             LazyColumn(verticalArrangement = Arrangement.spacedBy(14.dp)) {

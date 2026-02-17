@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -36,10 +35,10 @@ fun SocialHubApp() {
         )
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            containerColor = AppColors.Ink,
+            containerColor = AppColors.Gradient1,
             bottomBar = {
                 NavigationBar(
-                    containerColor = AppColors.Carbon,
+                    containerColor = AppColors.PostCardBG,
                     tonalElevation = 0.dp
                 ) {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
