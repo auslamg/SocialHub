@@ -15,26 +15,36 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.socialhub.ui.SocialHubScreenPadding
 import com.example.socialhub.ui.components.AnimatedGradientBackground
 import com.example.socialhub.ui.components.AppColors
 import com.example.socialhub.ui.components.DarkOutlinedTextField
+import com.example.socialhub.ui.navigation.AppDestination
 
 @Composable
-fun CreateUserScreen() {
-    var name by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf("") }
-    var bio by remember { mutableStateOf("") }
+fun CreateUserScreen(
+    navController: NavHostController,
+    viewModel: CreateUserViewModel = hiltViewModel()
+) {
+    val uiState = viewModel.uiState
+
+    LaunchedEffect(Unit) {
+        viewModel.navigation.collect {
+            navController.navigate(AppDestination.Profile.route) {
+                launchSingleTop = true
+                popUpTo(AppDestination.CreateUser.route) { inclusive = true }
+            }
+        }
+    }
 
     AnimatedGradientBackground {
         Column(
@@ -64,31 +74,39 @@ fun CreateUserScreen() {
             )
             Spacer(modifier = Modifier.height(16.dp))
             DarkOutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
+                value = uiState.name,
+                onValueChange = viewModel::onNameChange,
                 label = "Name",
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(12.dp))
             DarkOutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
+                value = uiState.username,
+                onValueChange = viewModel::onUsernameChange,
                 label = "Username",
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(12.dp))
             DarkOutlinedTextField(
-                value = bio,
-                onValueChange = { bio = it },
+                value = uiState.avatarUrl,
+                onValueChange = viewModel::onAvatarUrlChange,
+                label = "Avatar URL",
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            DarkOutlinedTextField(
+                value = uiState.bio,
+                onValueChange = viewModel::onBioChange,
                 label = "Bio",
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(18.dp))
             Button(
-                onClick = { },
+                onClick = viewModel::registerUser,
                 colors = ButtonDefaults.buttonColors(containerColor = AppColors.AccentAzure),
                 shape = RoundedCornerShape(14.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !uiState.isSaving
             ) {
                 Text("Create profile", color = AppColors.Gradient2)
             }

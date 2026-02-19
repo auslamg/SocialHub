@@ -45,7 +45,7 @@ fun AnimatedGradientBackground(
         initialValue = 0f,
         targetValue = 3f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 12000, easing = EaseInOut),
+            animation = tween(durationMillis = 3000, easing = EaseInOut),
             repeatMode = RepeatMode.Reverse
         ),
         label = "shift"

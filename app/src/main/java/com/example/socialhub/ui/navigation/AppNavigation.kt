@@ -44,7 +44,7 @@ fun SocialHubNavHost(navController: NavHostController) {
         composable(AppDestination.Hub.route) { HubScreen() }
         composable(AppDestination.Trending.route) { TrendingScreen() }
         composable(AppDestination.CreatePost.route) { CreatePostScreen() }
-        composable(AppDestination.Profile.route) { ProfileScreen() }
-        composable(AppDestination.CreateUser.route) { CreateUserScreen() }
+        composable(AppDestination.Profile.route) { ProfileScreen(navController) }
+        composable(AppDestination.CreateUser.route) { CreateUserScreen(navController) }
     }
 }

@@ -1,6 +1,6 @@
 package com.example.socialhub.ui.screens.profile
 
-import androidx.compose.foundation.background
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,27 +8,50 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.socialhub.ui.SocialHubScreenPadding
 import com.example.socialhub.ui.components.AnimatedGradientBackground
 import com.example.socialhub.ui.components.AppColors
 import com.example.socialhub.ui.components.PostCard
 import com.example.socialhub.ui.components.ProfileHeader
+import com.example.socialhub.ui.navigation.AppDestination
 import com.example.socialhub.ui.screens.hub.SamplePost
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    navController: NavHostController,
+    viewModel: ProfileViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(uiState) {
+        if (!uiState.isLoading && uiState.user == null) {
+            Toast.makeText(
+                context,
+                "Create a profile to continue",
+                Toast.LENGTH_SHORT
+            ).show()
+            navController.navigate(AppDestination.CreateUser.route) {
+                launchSingleTop = true
+                popUpTo(AppDestination.Profile.route) { inclusive = true }
+            }
+        }
+    }
+
     AnimatedGradientBackground {
         Column(modifier = Modifier.padding(SocialHubScreenPadding())) {
             Text(
@@ -45,11 +68,24 @@ fun ProfileScreen() {
                 color = AppColors.ViridianText
             )
             Spacer(modifier = Modifier.height(16.dp))
-            ProfileHeader(
-                name = "Dylan Shore",
-                handle = "@dylans",
-                bio = "Building tiny social rituals. Ambient, thoughtful, slow."
-            )
+            if (uiState.user != null) {
+                val profile = uiState.user!!
+                ProfileHeader(
+                    name = profile.name,
+                    handle = "@${profile.username}",
+                    bio = profile.bio ?: "",
+                    postsCount = profile.postsCount,
+                    followersCount = profile.followersCount,
+                    followingCount = profile.followingCount
+                )
+            } else if (!uiState.isLoading) {
+                Text(
+                    text = "No profile found.",
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 12.sp,
+                    color = AppColors.ViridianText
+                )
+            }
             Spacer(modifier = Modifier.height(18.dp))
             Text(
                 text = "Recent",

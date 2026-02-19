@@ -28,6 +28,9 @@ fun ProfileHeader(
     name: String,
     handle: String,
     bio: String,
+    postsCount: Int,
+    followersCount: Int,
+    followingCount: Int,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -72,9 +75,9 @@ fun ProfileHeader(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ProfileStat(label = "Posts", value = "348")
-                ProfileStat(label = "Followers", value = "12.4k")
-                ProfileStat(label = "Following", value = "216")
+                ProfileStat(label = "Posts", value = postsCount.toString())
+                ProfileStat(label = "Followers", value = followersCount.toString())
+                ProfileStat(label = "Following", value = followingCount.toString())
             }
         }
     }
