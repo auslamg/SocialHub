@@ -84,7 +84,9 @@ fun CreateUserScreen(
                 value = uiState.username,
                 onValueChange = viewModel::onUsernameChange,
                 label = "Username",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                supportingText = uiState.usernameError,
+                isError = uiState.usernameError != null
             )
             Spacer(modifier = Modifier.height(12.dp))
             DarkOutlinedTextField(
@@ -106,7 +108,10 @@ fun CreateUserScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = AppColors.AccentAzure),
                 shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.fillMaxWidth(),
-                enabled = !uiState.isSaving
+                enabled = !uiState.isSaving &&
+                    uiState.name.isNotBlank() &&
+                    uiState.username.isNotBlank() &&
+                    uiState.usernameError == null
             ) {
                 Text("Create profile", color = AppColors.Gradient2)
             }

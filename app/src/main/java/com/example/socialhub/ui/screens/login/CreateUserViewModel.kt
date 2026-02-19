@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 data class CreateUserUiState(
     val name: String = "",
     val username: String = "",
+    val usernameError: String? = null,
     val avatarUrl: String = "",
     val bio: String = "",
     val isSaving: Boolean = false
@@ -38,7 +39,10 @@ class CreateUserViewModel @Inject constructor(
     }
 
     fun onUsernameChange(value: String) {
-        uiState = uiState.copy(username = value)
+        uiState = uiState.copy(
+            username = value,
+            usernameError = validateUsername(value)
+        )
     }
 
     fun onAvatarUrlChange(value: String) {
@@ -52,12 +56,21 @@ class CreateUserViewModel @Inject constructor(
     fun registerUser() {
         val name = uiState.name.trim()
         val username = uiState.username.trim()
-        if (name.isBlank() || username.isBlank()) {
+        val usernameError = validateUsername(username)
+        if (name.isBlank() || username.isBlank() || usernameError != null) {
+            uiState = uiState.copy(usernameError = usernameError)
             return
         }
 
         viewModelScope.launch {
             uiState = uiState.copy(isSaving = true)
+            if (userDao.existsUsername(username)) {
+                uiState = uiState.copy(
+                    isSaving = false,
+                    usernameError = "Username already taken"
+                )
+                return@launch
+            }
             currentUserStore.clearCurrentUserId()
             val user = UserEntity(
                 id = System.currentTimeMillis(),
@@ -74,5 +87,14 @@ class CreateUserViewModel @Inject constructor(
             uiState = uiState.copy(isSaving = false)
             _navigation.tryEmit(Unit)
         }
+    }
+
+    private fun validateUsername(value: String): String? {
+        val trimmed = value.trim()
+        if (trimmed.isBlank()) {
+            return null
+        }
+        val valid = trimmed.matches(Regex("^[A-Za-z0-9_-]+$"))
+        return if (valid) null else "Only letters, numbers, _ or -"
     }
 }

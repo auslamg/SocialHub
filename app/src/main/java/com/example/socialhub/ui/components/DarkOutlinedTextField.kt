@@ -13,13 +13,21 @@ fun DarkOutlinedTextField(
     onValueChange: (String) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
-    outlineColor: Color = AppColors.LightGreyText
+    outlineColor: Color = AppColors.LightGreyText,
+    supportingText: String? = null,
+    isError: Boolean = false
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(label) },
         modifier = modifier,
+        supportingText = {
+            if (!supportingText.isNullOrBlank()) {
+                Text(supportingText)
+            }
+        },
+        isError = isError,
         colors = TextFieldDefaults.colors(
             focusedTextColor = AppColors.WhiteText,
             unfocusedTextColor = AppColors.WhiteText,
@@ -31,7 +39,10 @@ fun DarkOutlinedTextField(
             focusedIndicatorColor = outlineColor,
             unfocusedIndicatorColor = outlineColor,
             focusedLabelColor = AppColors.LightGreyText,
-            unfocusedLabelColor = AppColors.LightGreyText
+            unfocusedLabelColor = AppColors.LightGreyText,
+            errorIndicatorColor = AppColors.AccentAqua,
+            errorLabelColor = AppColors.AccentAqua,
+            errorSupportingTextColor = AppColors.AccentAqua
         )
     )
 }

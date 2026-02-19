@@ -20,6 +20,9 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE username LIKE :query || '%' ORDER BY username ASC")
     fun searchByUsername(query: String): Flow<List<UserEntity>>
 
+    @Query("SELECT EXISTS(SELECT 1 FROM users WHERE username = :username LIMIT 1)")
+    suspend fun existsUsername(username: String): Boolean
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(user: UserEntity)
 
