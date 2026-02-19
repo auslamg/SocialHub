@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 object AppColors {
     val Gradient1 = Color(0xFF222A3B)
     val Gradient2 = Color(0xFF1D3D59)
-    val Gradient3 = Color(0xFF25475D)
+    val Gradient3 = Color(0xFF255270)
 
     val PostCardBG = Color(0xFF1E1F22)
 
@@ -59,7 +59,7 @@ fun AnimatedGradientBackground(
             AppColors.Gradient1
         ),
         start = Offset(0f, 200f * shift),
-        end = Offset(1800f, 1800f + 200f * shift)
+        end = Offset(1200f, 1200f + 200f * shift)
     )
     Box(
         modifier = modifier
