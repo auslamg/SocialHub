@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.example.socialhub.ui.SocialHubScreenPadding
 import com.example.socialhub.ui.components.AnimatedGradientBackground
 import com.example.socialhub.ui.components.AppColors
+import com.example.socialhub.ui.components.DarkOutlinedTextField
 
 @Composable
 fun CreateUserScreen() {
@@ -63,24 +63,24 @@ fun CreateUserScreen() {
                     .background(AppColors.AccentAqua)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            OutlinedTextField(
+            DarkOutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Name") },
+                label = "Name",
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(12.dp))
-            OutlinedTextField(
+            DarkOutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
-                label = { Text("Username") },
+                label = "Username",
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(12.dp))
-            OutlinedTextField(
+            DarkOutlinedTextField(
                 value = bio,
                 onValueChange = { bio = it },
-                label = { Text("Bio") },
+                label = "Bio",
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(18.dp))

@@ -13,9 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.example.socialhub.ui.SocialHubScreenPadding
 import com.example.socialhub.ui.components.AnimatedGradientBackground
 import com.example.socialhub.ui.components.AppColors
+import com.example.socialhub.ui.components.DarkOutlinedTextField
 
 @Composable
 fun CreatePostScreen() {
@@ -62,31 +61,14 @@ fun CreatePostScreen() {
                     .background(AppColors.AccentAzure)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            OutlinedTextField(
+            DarkOutlinedTextField(
                 value = content,
                 onValueChange = { content = it },
-                label = { Text("What's happening?") },
+                label = "What's happening?",
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(240.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedTextColor = AppColors.WhiteText,
-                    unfocusedTextColor = AppColors.WhiteText,
-
-                    focusedContainerColor = AppColors.PostCardBG,
-                    unfocusedContainerColor = AppColors.PostCardBG,
-
-                    cursorColor = AppColors.BlackText,
-
-                    focusedSupportingTextColor = AppColors.LightGreyText,
-                    unfocusedSupportingTextColor = AppColors.LightGreyText,
-
-                    focusedIndicatorColor = AppColors.AccentAqua,
-                    unfocusedIndicatorColor = AppColors.AccentAqua,
-
-                    focusedLabelColor = AppColors.LightGreyText,
-                    unfocusedLabelColor = AppColors.LightGreyText
-                )
+                outlineColor = AppColors.AccentAqua
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(

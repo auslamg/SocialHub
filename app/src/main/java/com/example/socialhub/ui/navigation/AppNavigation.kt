@@ -31,7 +31,7 @@ sealed class AppDestination(
         selectedTextColor = AppColors.WhiteText,
         unselectedIconColor = AppColors.ViridianText,
         unselectedTextColor = AppColors.ViridianText,
-        indicatorColor = AppColors.Gradient2
+        indicatorColor = AppColors.AccentAzure
     )
 }
 

@@ -54,7 +54,7 @@ fun HubScreen() {
     }
 }
 
-private data class SamplePost(
+public data class SamplePost(
     val author: String,
     val handle: String,
     val body: String,

@@ -1,14 +1,17 @@
 package com.example.socialhub.ui.screens.profile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +23,9 @@ import androidx.compose.ui.unit.sp
 import com.example.socialhub.ui.SocialHubScreenPadding
 import com.example.socialhub.ui.components.AnimatedGradientBackground
 import com.example.socialhub.ui.components.AppColors
+import com.example.socialhub.ui.components.PostCard
 import com.example.socialhub.ui.components.ProfileHeader
+import com.example.socialhub.ui.screens.hub.SamplePost
 
 @Composable
 fun ProfileScreen() {
@@ -53,21 +58,25 @@ fun ProfileScreen() {
                 color = AppColors.ViridianText
             )
             Spacer(modifier = Modifier.height(10.dp))
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
-                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
-            ) {
-                items((1..12).toList()) { item ->
-                    Spacer(
-                        modifier = Modifier
-                            .height(96.dp)
-                            .background(AppColors.PostCardBG, RoundedCornerShape(12.dp))
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                items(samplePosts()) { post ->
+                    PostCard(
+                        author = post.author,
+                        handle = post.handle,
+                        body = post.body,
+                        stamp = post.stamp,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
+                item { Spacer(modifier = Modifier.height(120.dp)) }
             }
             Spacer(modifier = Modifier.height(120.dp))
         }
     }
 }
+
+private fun samplePosts(): List<SamplePost> = listOf(
+    SamplePost("Dylan Shore", "@iris", "Exploring quiet builds for loud ideas.", "2m"),
+    SamplePost("Dylan Shore", "@novap", "Late-night sprint, early-morning glow.", "7m"),
+    SamplePost("Dylan Shore", "@theo", "Shipping, but with intention.", "11m")
+)
