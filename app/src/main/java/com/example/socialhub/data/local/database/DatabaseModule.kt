@@ -20,7 +20,9 @@ object DatabaseModule {
             context,
             SocialHubDatabase::class.java,
             "socialhub.db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

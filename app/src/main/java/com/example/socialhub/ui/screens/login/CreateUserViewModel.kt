@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.socialhub.data.local.dao.UserDao
 import com.example.socialhub.data.local.entity.UserEntity
+import com.example.socialhub.data.local.session.CurrentUserStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,7 +24,8 @@ data class CreateUserUiState(
 
 @HiltViewModel
 class CreateUserViewModel @Inject constructor(
-    private val userDao: UserDao
+    private val userDao: UserDao,
+    private val currentUserStore: CurrentUserStore
 ) : ViewModel() {
     private val _navigation = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val navigation = _navigation.asSharedFlow()
@@ -56,6 +58,7 @@ class CreateUserViewModel @Inject constructor(
 
         viewModelScope.launch {
             uiState = uiState.copy(isSaving = true)
+            currentUserStore.clearCurrentUserId()
             val user = UserEntity(
                 id = System.currentTimeMillis(),
                 username = username,
@@ -67,6 +70,7 @@ class CreateUserViewModel @Inject constructor(
                 postsCount = 0
             )
             userDao.upsert(user)
+            currentUserStore.setCurrentUserId(user.id)
             uiState = uiState.copy(isSaving = false)
             _navigation.tryEmit(Unit)
         }

@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -78,6 +80,14 @@ fun ProfileScreen(
                     followersCount = profile.followersCount,
                     followingCount = profile.followingCount
                 )
+                Spacer(modifier = Modifier.height(12.dp))
+                Button(
+                    onClick = { viewModel.logout() },
+                    colors = ButtonDefaults.buttonColors(containerColor = AppColors.AccentAzure),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Log out", color = AppColors.Gradient2)
+                }
             } else if (!uiState.isLoading) {
                 Text(
                     text = "No profile found.",
