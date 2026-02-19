@@ -65,7 +65,7 @@ fun PostCard(
                     text = stamp,
                     fontFamily = FontFamily.Monospace,
                     fontSize = 11.sp,
-                    color = AppColors.GreyText
+                    color = AppColors.LightGreyText
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -80,10 +80,10 @@ fun PostCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Reply", fontFamily = FontFamily.Monospace, color = AppColors.GreyText)
-                Text("Repost", fontFamily = FontFamily.Monospace, color = AppColors.GreyText)
-                Text("Like", fontFamily = FontFamily.Monospace, color = AppColors.GreyText)
-                Text("Share", fontFamily = FontFamily.Monospace, color = AppColors.GreyText)
+                Text("Reply", fontFamily = FontFamily.Monospace, color = AppColors.LightGreyText)
+                Text("Repost", fontFamily = FontFamily.Monospace, color = AppColors.LightGreyText)
+                Text("Like", fontFamily = FontFamily.Monospace, color = AppColors.LightGreyText)
+                Text("Share", fontFamily = FontFamily.Monospace, color = AppColors.LightGreyText)
             }
         }
     }

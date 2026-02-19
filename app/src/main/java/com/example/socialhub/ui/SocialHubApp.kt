@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -11,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,10 +62,10 @@ fun SocialHubApp() {
                                 }
                             },
                             icon = {
-                                Text(
-                                    text = destination.iconText,
-                                    fontFamily = FontFamily.Serif,
-                                    fontSize = 14.sp
+                                Icon(
+                                    modifier = Modifier.size(22.dp),
+                                    painter = painterResource(id = destination.iconRes),
+                                    contentDescription = destination.label
                                 )
                             },
                             label = {

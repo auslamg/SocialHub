@@ -63,7 +63,7 @@ fun ProfileScreen() {
                     Spacer(
                         modifier = Modifier
                             .height(96.dp)
-                            .background(AppColors.Gradient2, RoundedCornerShape(12.dp))
+                            .background(AppColors.PostCardBG, RoundedCornerShape(12.dp))
                     )
                 }
             }

@@ -33,7 +33,7 @@ fun ProfileHeader(
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(22.dp),
-        color = AppColors.Gradient2
+        color = AppColors.PostCardBG
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {

@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,7 +68,25 @@ fun CreatePostScreen() {
                 label = { Text("What's happening?") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp)
+                    .height(240.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = AppColors.WhiteText,
+                    unfocusedTextColor = AppColors.WhiteText,
+
+                    focusedContainerColor = AppColors.PostCardBG,
+                    unfocusedContainerColor = AppColors.PostCardBG,
+
+                    cursorColor = AppColors.BlackText,
+
+                    focusedSupportingTextColor = AppColors.LightGreyText,
+                    unfocusedSupportingTextColor = AppColors.LightGreyText,
+
+                    focusedIndicatorColor = AppColors.AccentAqua,
+                    unfocusedIndicatorColor = AppColors.AccentAqua,
+
+                    focusedLabelColor = AppColors.LightGreyText,
+                    unfocusedLabelColor = AppColors.LightGreyText
+                )
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
