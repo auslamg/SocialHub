@@ -15,22 +15,30 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+// UI state for the Profile screen.
+// user == null means there is no current session.
+// isLoading helps avoid redirecting before the first DataStore emission arrives.
 data class ProfileUiState(
     val user: UserEntity?,
     val isLoading: Boolean
 )
 
+// Resolves the current session (DataStore) to a full UserEntity from Room.
+// This keeps "who is logged in" separate from the emulated backend data.
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val userDao: UserDao,
     private val currentUserStore: CurrentUserStore
 ) : ViewModel() {
     // Resolve the current user id to a full user record from Room.
+    // flatMapLatest re-subscribes to Room when the current user id changes.
     val uiState: StateFlow<ProfileUiState> = currentUserStore.currentUserId
         .flatMapLatest { userId ->
             if (userId == null) {
+                // No session: expose null user and stop loading.
                 flowOf(ProfileUiState(user = null, isLoading = false))
             } else {
+                // Session exists: observe the row so UI updates if it changes.
                 userDao.observeUser(userId)
                     .map { user -> ProfileUiState(user = user, isLoading = false) }
             }

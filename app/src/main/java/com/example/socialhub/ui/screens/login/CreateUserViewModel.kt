@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
+// UI state for the Create User screen.
+// Single immutable state object and replace it on changes.
 data class CreateUserUiState(
     val name: String = "",
     val username: String = "",
@@ -23,18 +25,23 @@ data class CreateUserUiState(
     val isSaving: Boolean = false
 )
 
+// Handles user creation and validation. Persists the user in Room and
+// marks them as the current user in the front-end session store (DataStore).
 @HiltViewModel
 class CreateUserViewModel @Inject constructor(
     private val userDao: UserDao,
     private val currentUserStore: CurrentUserStore
 ) : ViewModel() {
     // One-shot navigation events for the UI.
+    // SharedFlow is used because navigation should not be replayed on rotation.
     private val _navigation = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val navigation = _navigation.asSharedFlow()
 
+    // Compose observes this mutable state and re-renders on changes.
     var uiState by mutableStateOf(CreateUserUiState())
         private set
 
+    // Field updates are simple copies to keep state immutable.
     fun onNameChange(value: String) {
         uiState = uiState.copy(name = value)
     }
@@ -65,6 +72,7 @@ class CreateUserViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            // Persisting might be slow; the UI disables the button while saving.
             uiState = uiState.copy(isSaving = true)
             if (userDao.existsUsername(username)) {
                 uiState = uiState.copy(
@@ -73,6 +81,7 @@ class CreateUserViewModel @Inject constructor(
                 )
                 return@launch
             }
+            // Current user is a front-end session concept, not a DB column.
             currentUserStore.clearCurrentUserId()
             val user = UserEntity(
                 id = System.currentTimeMillis(),
@@ -87,10 +96,12 @@ class CreateUserViewModel @Inject constructor(
             userDao.upsert(user)
             currentUserStore.setCurrentUserId(user.id)
             uiState = uiState.copy(isSaving = false)
+            // Emit navigation event to move to Profile.
             _navigation.tryEmit(Unit)
         }
     }
 
+    // Username validation: non-empty, alphanumeric + '_' or '-' only.
     private fun validateUsername(value: String): String? {
         val trimmed = value.trim()
         if (trimmed.isBlank()) {
