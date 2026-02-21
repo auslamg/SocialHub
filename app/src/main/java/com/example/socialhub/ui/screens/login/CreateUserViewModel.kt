@@ -21,6 +21,7 @@ data class CreateUserUiState(
     val username: String = "",
     val usernameError: String? = null,
     val email: String = "",
+    val emailError: String? = null,
     val avatarUrl: String = "",
     val bio: String = "",
     val isSaving: Boolean = false
@@ -59,7 +60,10 @@ class CreateUserViewModel @Inject constructor(
     }
 
     fun onEmailChange(value: String) {
-        uiState = uiState.copy(email = value)
+        uiState = uiState.copy(
+            email = value,
+            emailError = validateEmail(value)
+        )
     }
 
     fun onBioChange(value: String) {
@@ -70,9 +74,14 @@ class CreateUserViewModel @Inject constructor(
         // Validates and persists a new user, then marks them as current.
         val name = uiState.name.trim()
         val username = uiState.username.trim()
+        val email = uiState.email.trim()
         val usernameError = validateUsername(username)
-        if (name.isBlank() || username.isBlank() || usernameError != null) {
-            uiState = uiState.copy(usernameError = usernameError)
+        val emailError = validateEmail(email)
+        if (name.isBlank() || username.isBlank() || usernameError != null || emailError != null) {
+            uiState = uiState.copy(
+                usernameError = usernameError,
+                emailError = emailError
+            )
             return
         }
 
@@ -92,7 +101,7 @@ class CreateUserViewModel @Inject constructor(
                 id = System.currentTimeMillis(),
                 username = username,
                 name = name,
-                email = uiState.email.trim().ifBlank { null },
+                email = email.ifBlank { null },
                 avatarUrl = uiState.avatarUrl.trim().ifBlank { null },
                 bio = uiState.bio.trim().ifBlank { null },
                 followersCount = 0,
@@ -115,5 +124,17 @@ class CreateUserViewModel @Inject constructor(
         }
         val valid = trimmed.matches(Regex("^[A-Za-z0-9_-]+$"))
         return if (valid) null else "Only letters, numbers, _ or -"
+    }
+
+    // Email format: n(xxx.)+x+@+n(xxx.)+xxx
+    private fun validateEmail(value: String): String? {
+        val trimmed = value.trim()
+        if (trimmed.isBlank()) {
+            return "Email is required"
+        }
+        val emailRegex = Regex(
+            "^[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)+$"
+        )
+        return if (emailRegex.matches(trimmed)) null else "Email format is invalid"
     }
 }

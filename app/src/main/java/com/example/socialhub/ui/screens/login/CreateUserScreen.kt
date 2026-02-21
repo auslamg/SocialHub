@@ -41,7 +41,7 @@ fun CreateUserScreen(
     LaunchedEffect(Unit) {
         // Navigate to profile once the user is saved.
         viewModel.navigation.collect {
-            navController.navigate(AppDestination.Profile.route) {
+            navController.navigate(AppDestination.MyProfile.route) {
                 launchSingleTop = true
                 popUpTo(AppDestination.CreateUser.route) { inclusive = true }
             }
@@ -95,7 +95,9 @@ fun CreateUserScreen(
                 value = uiState.email,
                 onValueChange = viewModel::onEmailChange,
                 label = "Email",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                supportingText = uiState.emailError,
+                isError = uiState.emailError != null
             )
             Spacer(modifier = Modifier.height(12.dp))
             DarkOutlinedTextField(
@@ -120,7 +122,9 @@ fun CreateUserScreen(
                 enabled = !uiState.isSaving &&
                     uiState.name.isNotBlank() &&
                     uiState.username.isNotBlank() &&
-                    uiState.usernameError == null
+                    uiState.usernameError == null &&
+                    uiState.email.isNotBlank() &&
+                    uiState.emailError == null
             ) {
                 Text("Create profile", color = AppColors.Gradient2)
             }

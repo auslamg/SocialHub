@@ -26,7 +26,7 @@ data class ProfileUiState(
 // Resolves the current session (DataStore) to a full UserEntity from Room.
 // This keeps "who is logged in" separate from the emulated backend data.
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
+class MyProfileViewModel @Inject constructor(
     private val userDao: UserDao,
     private val currentUserStore: CurrentUserStore
 ) : ViewModel() {

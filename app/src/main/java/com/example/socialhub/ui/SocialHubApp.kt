@@ -36,7 +36,7 @@ fun SocialHubApp() {
             AppDestination.Trending,
             AppDestination.CreatePost,
             AppDestination.Search,
-            AppDestination.Profile,
+            AppDestination.MyProfile,
             AppDestination.CreateUser
         )
         Scaffold(

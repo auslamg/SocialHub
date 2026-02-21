@@ -1,6 +1,5 @@
-package com.example.socialhub.ui.screens.profile
+package com.example.socialhub.ui.components
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,49 +12,21 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.example.socialhub.ui.SocialHubScreenPadding
-import com.example.socialhub.ui.components.AnimatedGradientBackground
-import com.example.socialhub.ui.components.AppColors
-import com.example.socialhub.ui.components.PostCard
-import com.example.socialhub.ui.components.ProfileHeader
-import com.example.socialhub.ui.navigation.AppDestination
 import com.example.socialhub.ui.screens.hub.SamplePost
+import com.example.socialhub.ui.screens.profile.ProfileUiState
 
 @Composable
-fun ProfileScreen(
-    navController: NavHostController,
-    viewModel: ProfileViewModel = hiltViewModel()
+fun ProfileContent(
+    uiState: ProfileUiState,
+    showLogout: Boolean,
+    onLogout: (() -> Unit)?
 ) {
-    // Profile is driven by the current user session (front-end state).
-    val uiState by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
-
-    LaunchedEffect(uiState) {
-        // If no current user, redirect to Create User.
-        if (!uiState.isLoading && uiState.user == null) {
-            Toast.makeText(
-                context,
-                "Create a profile to continue",
-                Toast.LENGTH_SHORT
-            ).show()
-            navController.navigate(AppDestination.CreateUser.route) {
-                launchSingleTop = true
-                popUpTo(AppDestination.Profile.route) { inclusive = true }
-            }
-        }
-    }
-
     AnimatedGradientBackground {
         Column(modifier = Modifier.padding(SocialHubScreenPadding())) {
             Text(
@@ -73,7 +44,7 @@ fun ProfileScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
             if (uiState.user != null) {
-                val profile = uiState.user!!
+                val profile = uiState.user
                 ProfileHeader(
                     name = profile.name,
                     handle = "@${profile.username}",
@@ -82,13 +53,15 @@ fun ProfileScreen(
                     followersCount = profile.followersCount,
                     followingCount = profile.followingCount
                 )
-                Spacer(modifier = Modifier.height(12.dp))
-                Button(
-                    onClick = { viewModel.logout() },
-                    colors = ButtonDefaults.buttonColors(containerColor = AppColors.AccentAzure),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Log out", color = AppColors.Gradient2)
+                if (showLogout && onLogout != null) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Button(
+                        onClick = onLogout,
+                        colors = ButtonDefaults.buttonColors(containerColor = AppColors.AccentAzure),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Log out", color = AppColors.Gradient2)
+                    }
                 }
             } else if (!uiState.isLoading) {
                 Text(
