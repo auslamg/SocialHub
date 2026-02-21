@@ -13,6 +13,7 @@ import com.example.socialhub.ui.screens.hub.TrendingScreen
 import com.example.socialhub.ui.screens.login.CreateUserScreen
 import com.example.socialhub.ui.screens.post.CreatePostScreen
 import com.example.socialhub.ui.screens.profile.ProfileScreen
+import com.example.socialhub.ui.screens.search.SearchScreen
 
 sealed class AppDestination(
     val route: String,
@@ -22,6 +23,7 @@ sealed class AppDestination(
     data object Hub : AppDestination("hub", "Hub", R.drawable.ic_hub)
     data object Trending : AppDestination("trending", "Trend", R.drawable.ic_trending)
     data object CreatePost : AppDestination("create_post", "Post", R.drawable.ic_create)
+    data object Search : AppDestination("search", "Search", R.drawable.ic_search)
     data object Profile : AppDestination("profile", "Profile", R.drawable.ic_profile)
     data object CreateUser : AppDestination("create_user", "Join", R.drawable.ic_create_user)
 
@@ -44,6 +46,7 @@ fun SocialHubNavHost(navController: NavHostController) {
         composable(AppDestination.Hub.route) { HubScreen() }
         composable(AppDestination.Trending.route) { TrendingScreen() }
         composable(AppDestination.CreatePost.route) { CreatePostScreen() }
+        composable(AppDestination.Search.route) { SearchScreen() }
         composable(AppDestination.Profile.route) { ProfileScreen(navController) }
         composable(AppDestination.CreateUser.route) { CreateUserScreen(navController) }
     }

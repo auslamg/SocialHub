@@ -33,6 +33,7 @@ fun SocialHubApp() {
             AppDestination.Hub,
             AppDestination.Trending,
             AppDestination.CreatePost,
+            AppDestination.Search,
             AppDestination.Profile,
             AppDestination.CreateUser
         )
