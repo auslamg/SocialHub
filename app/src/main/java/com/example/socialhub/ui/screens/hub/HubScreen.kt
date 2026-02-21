@@ -22,6 +22,7 @@ import com.example.socialhub.ui.components.PostCard
 
 @Composable
 fun HubScreen() {
+    // Home feed screen using local sample data.
     AnimatedGradientBackground {
         Column(modifier = Modifier.padding(SocialHubScreenPadding())) {
             Text(
@@ -54,6 +55,7 @@ fun HubScreen() {
     }
 }
 
+// Simple model used by Hub/Trending to render sample cards.
 public data class SamplePost(
     val author: String,
     val handle: String,
@@ -61,6 +63,7 @@ public data class SamplePost(
     val stamp: String
 )
 
+// Static demo data until wired to a real feed source.
 private fun samplePosts(): List<SamplePost> = listOf(
     SamplePost("Iris Calder", "@iris", "Exploring quiet builds for loud ideas.", "2m"),
     SamplePost("Nova Park", "@novap", "Late-night sprint, early-morning glow.", "7m"),

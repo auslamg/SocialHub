@@ -13,6 +13,7 @@ import com.example.socialhub.data.local.entity.PostEntity
 import com.example.socialhub.data.local.entity.SearchHistoryEntity
 import com.example.socialhub.data.local.entity.UserEntity
 
+// Room database acts as a local, emulated backend for app data.
 @Database(
     entities = [
         UserEntity::class,
@@ -25,6 +26,7 @@ import com.example.socialhub.data.local.entity.UserEntity
     exportSchema = false
 )
 abstract class SocialHubDatabase : RoomDatabase() {
+    // DAOs expose typed APIs for each table.
     abstract fun userDao(): UserDao
     abstract fun postDao(): PostDao
     abstract fun commentDao(): CommentDao

@@ -25,6 +25,7 @@ class ProfileViewModel @Inject constructor(
     private val userDao: UserDao,
     private val currentUserStore: CurrentUserStore
 ) : ViewModel() {
+    // Resolve the current user id to a full user record from Room.
     val uiState: StateFlow<ProfileUiState> = currentUserStore.currentUserId
         .flatMapLatest { userId ->
             if (userId == null) {
@@ -41,6 +42,7 @@ class ProfileViewModel @Inject constructor(
         )
 
     fun logout() {
+        // Clears the current session without touching the database rows.
         viewModelScope.launch {
             currentUserStore.clearCurrentUserId()
         }

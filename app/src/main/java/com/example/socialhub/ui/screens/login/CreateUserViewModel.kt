@@ -28,6 +28,7 @@ class CreateUserViewModel @Inject constructor(
     private val userDao: UserDao,
     private val currentUserStore: CurrentUserStore
 ) : ViewModel() {
+    // One-shot navigation events for the UI.
     private val _navigation = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val navigation = _navigation.asSharedFlow()
 
@@ -54,6 +55,7 @@ class CreateUserViewModel @Inject constructor(
     }
 
     fun registerUser() {
+        // Validates and persists a new user, then marks them as current.
         val name = uiState.name.trim()
         val username = uiState.username.trim()
         val usernameError = validateUsername(username)

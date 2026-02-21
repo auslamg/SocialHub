@@ -16,6 +16,7 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): SocialHubDatabase {
+        // Single database instance for the app process.
         return Room.databaseBuilder(
             context,
             SocialHubDatabase::class.java,
@@ -27,6 +28,7 @@ object DatabaseModule {
 
     @Provides
     fun provideUserDao(database: SocialHubDatabase): UserDao {
+        // DAOs are lightweight; provide directly from Room.
         return database.userDao()
     }
 }

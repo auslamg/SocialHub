@@ -26,6 +26,7 @@ import com.example.socialhub.ui.components.PostCard
 
 @Composable
 fun TrendingScreen() {
+    // Trending feed based on static demo content.
     AnimatedGradientBackground {
         Column(modifier = Modifier.padding(SocialHubScreenPadding())) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -73,6 +74,7 @@ fun TrendingScreen() {
     }
 }
 
+// Local model for trending sample cards.
 private data class TrendingPost(
     val author: String,
     val handle: String,
@@ -80,6 +82,7 @@ private data class TrendingPost(
     val stamp: String
 )
 
+// Static demo data until a backend is wired.
 private fun trendingPosts(): List<TrendingPost> = listOf(
     TrendingPost("Atlas Jade", "@atlas", "Designing for kindness at scale.", "Trending"),
     TrendingPost("Rhea Noon", "@rhea", "Hot take: text-first feeds win.", "Trending"),

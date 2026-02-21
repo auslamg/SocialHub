@@ -11,6 +11,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
+// Basic Material3 color schemes (not used heavily since we have AppColors).
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
@@ -40,6 +41,7 @@ fun SocialHubTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    // MaterialTheme wrapper for Compose. Keeps typography + default colors.
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current

@@ -20,8 +20,10 @@ import kotlinx.coroutines.flow.flowOf
 class SearchViewModel @Inject constructor(
     private val userDao: UserDao
 ) : ViewModel() {
+    // Raw user input; kept immediate for responsive text field updates.
     private val queryFlow = MutableStateFlow("")
 
+    // Debounced results to avoid querying on every keystroke.
     private val resultsFlow = queryFlow
         .debounce(1200)
         .flatMapLatest { query ->

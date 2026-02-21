@@ -37,10 +37,12 @@ fun ProfileScreen(
     navController: NavHostController,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    // Profile is driven by the current user session (front-end state).
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
     LaunchedEffect(uiState) {
+        // If no current user, redirect to Create User.
         if (!uiState.isLoading && uiState.user == null) {
             Toast.makeText(
                 context,

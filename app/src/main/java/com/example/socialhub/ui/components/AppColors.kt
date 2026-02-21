@@ -17,6 +17,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
+// Centralized palette used across Compose screens.
 object AppColors {
     val Gradient1 = Color(0xFF222A3B)
     val Gradient2 = Color(0xFF1D3D59)
@@ -40,6 +41,7 @@ fun AnimatedGradientBackground(
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit
 ) {
+    // Subtle animated gradient used as the screen backdrop.
     val transition = rememberInfiniteTransition(label = "bg")
     val shift by transition.animateFloat(
         initialValue = 0f,

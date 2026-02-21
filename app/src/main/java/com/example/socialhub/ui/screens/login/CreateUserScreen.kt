@@ -35,9 +35,11 @@ fun CreateUserScreen(
     navController: NavHostController,
     viewModel: CreateUserViewModel = hiltViewModel()
 ) {
+    // UI layer for creating a profile; uses ViewModel state and actions.
     val uiState = viewModel.uiState
 
     LaunchedEffect(Unit) {
+        // Navigate to profile once the user is saved.
         viewModel.navigation.collect {
             navController.navigate(AppDestination.Profile.route) {
                 launchSingleTop = true

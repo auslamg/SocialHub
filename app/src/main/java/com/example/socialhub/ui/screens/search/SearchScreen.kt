@@ -27,6 +27,7 @@ import com.example.socialhub.ui.components.DarkOutlinedTextField
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel()
 ) {
+    // Search UI that queries the local user table by username prefix.
     val uiState by viewModel.uiState.collectAsState()
 
     AnimatedGradientBackground {

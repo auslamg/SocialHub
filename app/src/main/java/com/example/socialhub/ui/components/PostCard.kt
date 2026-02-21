@@ -31,6 +31,7 @@ fun PostCard(
     stamp: String,
     modifier: Modifier = Modifier
 ) {
+    // Reusable feed card for posts in Hub/Trending/Profile.
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(18.dp),

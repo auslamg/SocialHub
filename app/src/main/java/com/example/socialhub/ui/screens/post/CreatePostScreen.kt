@@ -32,6 +32,7 @@ import com.example.socialhub.ui.components.DarkOutlinedTextField
 
 @Composable
 fun CreatePostScreen() {
+    // Draft-only UI; persistence can be added later.
     var content by remember { mutableStateOf("") }
 
     AnimatedGradientBackground {

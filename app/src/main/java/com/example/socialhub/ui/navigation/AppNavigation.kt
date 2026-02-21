@@ -20,6 +20,7 @@ sealed class AppDestination(
     val label: String,
     @DrawableRes val iconRes: Int
 ) {
+    // Bottom nav destinations (route/label/icon) used across the app.
     data object Hub : AppDestination("hub", "Hub", R.drawable.ic_hub)
     data object Trending : AppDestination("trending", "Trend", R.drawable.ic_trending)
     data object CreatePost : AppDestination("create_post", "Post", R.drawable.ic_create)
@@ -39,6 +40,7 @@ sealed class AppDestination(
 
 @Composable
 fun SocialHubNavHost(navController: NavHostController) {
+    // Central navigation graph. Keep routes in one place for consistency.
     NavHost(
         navController = navController,
         startDestination = AppDestination.Hub.route

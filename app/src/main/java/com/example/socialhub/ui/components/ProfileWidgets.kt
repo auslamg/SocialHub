@@ -33,6 +33,7 @@ fun ProfileHeader(
     followingCount: Int,
     modifier: Modifier = Modifier
 ) {
+    // Header card for profile identity + stats.
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(22.dp),
@@ -85,6 +86,7 @@ fun ProfileHeader(
 
 @Composable
 private fun ProfileStat(label: String, value: String) {
+    // Compact stat used in the profile header row.
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = value,

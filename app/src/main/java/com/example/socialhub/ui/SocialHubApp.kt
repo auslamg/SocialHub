@@ -27,8 +27,10 @@ import com.example.socialhub.ui.theme.SocialHubTheme
 
 @Composable
 fun SocialHubApp() {
+    // Top-level theme + navigation scaffold for the entire app.
     SocialHubTheme {
         val navController = rememberNavController()
+        // Bottom nav destinations; order defines the bar layout.
         val destinations = listOf(
             AppDestination.Hub,
             AppDestination.Trending,
@@ -48,12 +50,14 @@ fun SocialHubApp() {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentDestination = navBackStackEntry?.destination
                     destinations.forEach { destination ->
+                        // Mark the current route as selected to drive colors.
                         val selected = currentDestination?.hierarchy?.any {
                             it.route == destination.route
                         } == true
                         NavigationBarItem(
                             selected = selected,
                             onClick = {
+                                // Single-top keeps one instance per destination in the back stack.
                                 navController.navigate(destination.route) {
                                     launchSingleTop = true
                                     restoreState = true
@@ -82,6 +86,7 @@ fun SocialHubApp() {
                 }
             }
         ) { padding ->
+            // Host composable destinations.
             Box(modifier = Modifier.padding(padding)) {
                 SocialHubNavHost(navController = navController)
             }
@@ -91,6 +96,7 @@ fun SocialHubApp() {
 
 @Composable
 fun SocialHubScreenPadding(): PaddingValues = PaddingValues(
+    // Common in-screen padding to align content across screens.
     start = 20.dp,
     end = 20.dp,
     top = 18.dp,
