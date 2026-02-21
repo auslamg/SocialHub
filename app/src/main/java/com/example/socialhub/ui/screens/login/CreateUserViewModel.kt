@@ -20,6 +20,7 @@ data class CreateUserUiState(
     val name: String = "",
     val username: String = "",
     val usernameError: String? = null,
+    val email: String = "",
     val avatarUrl: String = "",
     val bio: String = "",
     val isSaving: Boolean = false
@@ -57,6 +58,10 @@ class CreateUserViewModel @Inject constructor(
         uiState = uiState.copy(avatarUrl = value)
     }
 
+    fun onEmailChange(value: String) {
+        uiState = uiState.copy(email = value)
+    }
+
     fun onBioChange(value: String) {
         uiState = uiState.copy(bio = value)
     }
@@ -87,6 +92,7 @@ class CreateUserViewModel @Inject constructor(
                 id = System.currentTimeMillis(),
                 username = username,
                 name = name,
+                email = uiState.email.trim().ifBlank { null },
                 avatarUrl = uiState.avatarUrl.trim().ifBlank { null },
                 bio = uiState.bio.trim().ifBlank { null },
                 followersCount = 0,

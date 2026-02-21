@@ -92,6 +92,13 @@ fun CreateUserScreen(
             )
             Spacer(modifier = Modifier.height(12.dp))
             DarkOutlinedTextField(
+                value = uiState.email,
+                onValueChange = viewModel::onEmailChange,
+                label = "Email",
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            DarkOutlinedTextField(
                 value = uiState.avatarUrl,
                 onValueChange = viewModel::onAvatarUrlChange,
                 label = "Avatar URL",

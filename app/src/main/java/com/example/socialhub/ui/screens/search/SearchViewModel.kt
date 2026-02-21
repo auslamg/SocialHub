@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.socialhub.data.local.dao.UserDao
 import com.example.socialhub.data.local.entity.UserEntity
+import com.example.socialhub.data.remote.api.UserApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,10 +16,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val userDao: UserDao
+    private val userDao: UserDao,
+    private val userApi: UserApi
 ) : ViewModel() {
     // Raw user input; kept immediate for responsive text field updates.
     //Kept separate from results to avoid delayed typing.
@@ -48,6 +51,31 @@ class SearchViewModel @Inject constructor(
             SharingStarted.WhileSubscribed(5_000),
             SearchUiState()
         )
+
+    init {
+        // Fetches a sample of users once when entering the Search screen.
+        viewModelScope.launch {
+            try {
+                val remoteUsers = userApi.getUsers(limit = 10)
+                val entities = remoteUsers.map { remote ->
+                    UserEntity(
+                        id = remote.id,
+                        username = remote.username,
+                        name = remote.name,
+                        email = remote.email,
+                        avatarUrl = "https://i.pravatar.cc/150?u=${remote.username}",
+                        bio = null,
+                        followersCount = 0,
+                        followingCount = 0,
+                        postsCount = 0
+                    )
+                }
+                userDao.upsertAll(entities)
+            } catch (_: Exception) {
+                // Network errors are non-fatal; local search still works.
+            }
+        }
+    }
 
     // Called by the TextField on every keystroke.
     fun onQueryChange(value: String) {
