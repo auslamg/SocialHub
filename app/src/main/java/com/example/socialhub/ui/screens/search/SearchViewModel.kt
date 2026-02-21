@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -21,17 +22,20 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
     private val queryFlow = MutableStateFlow("")
 
-    val uiState: StateFlow<SearchUiState> = queryFlow
-        .debounce(200)
+    private val resultsFlow = queryFlow
+        .debounce(1200)
         .flatMapLatest { query ->
             val trimmed = query.trim()
             if (trimmed.isBlank()) {
-                flowOf(SearchUiState(query = query, results = emptyList()))
+                flowOf(emptyList())
             } else {
                 userDao.searchByUsername(trimmed)
-                    .map { results -> SearchUiState(query = query, results = results) }
             }
         }
+
+    val uiState: StateFlow<SearchUiState> = combine(queryFlow, resultsFlow) { query, results ->
+        SearchUiState(query = query, results = results)
+    }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
