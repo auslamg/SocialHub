@@ -38,7 +38,7 @@ class SearchViewModel @Inject constructor(
                 flowOf(emptyList())
             } else {
                 // Prefix search in Room (case-sensitive based on collation).
-                userDao.searchByUsername(trimmed)
+                userDao.searchByUsername(trimmed.lowercase())
             }
         }
 

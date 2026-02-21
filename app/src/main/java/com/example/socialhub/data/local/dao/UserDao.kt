@@ -19,8 +19,13 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE id = :userId")
     fun observeUser(userId: Long): Flow<UserEntity?>
 
-    // Prefix search for usernames (used by Search screen).
-    @Query("SELECT * FROM users WHERE username LIKE :query || '%' ORDER BY username ASC")
+    // Search users by username or name (substring match).
+    @Query(
+        "SELECT * FROM users " +
+            "WHERE LOWER(username) LIKE '%' || :query || '%' " +
+            "OR LOWER(name) LIKE '%' || :query || '%' " +
+            "ORDER BY username ASC"
+    )
     fun searchByUsername(query: String): Flow<List<UserEntity>>
 
     // Used to enforce unique usernames when creating users.

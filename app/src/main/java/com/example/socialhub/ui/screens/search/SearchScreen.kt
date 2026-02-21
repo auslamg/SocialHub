@@ -1,23 +1,30 @@
 package com.example.socialhub.ui.screens.search
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.example.socialhub.ui.SocialHubScreenPadding
 import com.example.socialhub.ui.components.AnimatedGradientBackground
 import com.example.socialhub.ui.components.AppColors
@@ -40,7 +47,7 @@ fun SearchScreen(
                 color = AppColors.WhiteText
             )
             Text(
-                text = "Find people by username.",
+                text = "Find people by name or username.",
                 fontFamily = FontFamily.Monospace,
                 fontSize = 12.sp,
                 color = AppColors.ViridianText
@@ -49,7 +56,7 @@ fun SearchScreen(
             DarkOutlinedTextField(
                 value = uiState.query,
                 onValueChange = viewModel::onQueryChange,
-                label = "Search usernames",
+                label = "Search users",
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -70,21 +77,33 @@ fun SearchScreen(
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     items(uiState.results, key = { it.id }) { user ->
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            Text(
-                                text = user.name,
-                                fontFamily = FontFamily.Serif,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 16.sp,
-                                color = AppColors.WhiteText
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            AsyncImage(
+                                model = user.avatarUrl,
+                                contentDescription = "${user.name} avatar",
+                                modifier = Modifier
+                                    .size(44.dp)
+                                    .clip(CircleShape)
+                                    .background(AppColors.AccentAqua),
+                                contentScale = ContentScale.Crop
                             )
-                            Text(
-                                text = "@${user.username}",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 12.sp,
-                                color = AppColors.ViridianText
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.size(12.dp))
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = user.name,
+                                    fontFamily = FontFamily.Serif,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 16.sp,
+                                    color = AppColors.WhiteText
+                                )
+                                Text(
+                                    text = "@${user.username}",
+                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 12.sp,
+                                    color = AppColors.ViridianText
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
                         }
                     }
                 }
