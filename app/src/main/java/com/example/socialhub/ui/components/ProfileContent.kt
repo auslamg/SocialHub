@@ -18,7 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.socialhub.ui.SocialHubScreenPadding
-import com.example.socialhub.ui.screens.hub.SamplePost
 import com.example.socialhub.ui.screens.profile.ProfileUiState
 
 @Composable
@@ -86,33 +85,46 @@ fun ProfileContent(
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(18.dp))
-            Text(
-                text = "Recent",
-                fontFamily = FontFamily.Monospace,
-                fontSize = 12.sp,
-                color = AppColors.ViridianText
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                items(samplePosts()) { post ->
-                    PostCard(
-                        author = post.author,
-                        handle = post.handle,
-                        body = post.body,
-                        stamp = post.stamp,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+            if (uiState.user != null) {
+                Spacer(modifier = Modifier.height(18.dp))
+                Text(
+                    text = "Recent",
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 12.sp,
+                    color = AppColors.ViridianText
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                val authorName = uiState.user.name
+                val authorHandle = "@${uiState.user.username}"
+                val authorAvatar = uiState.user.avatarUrl
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                    items(uiState.posts) { post ->
+                        PostCard(
+                            author = authorName,
+                            handle = authorHandle,
+                            body = post.content,
+                            likeCount = post.likeCount,
+                            dislikeCount = post.dislikeCount,
+                            stamp = formatStamp(post.createdAt),
+                            avatarUrl = authorAvatar,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    item { Spacer(modifier = Modifier.height(120.dp)) }
                 }
-                item { Spacer(modifier = Modifier.height(120.dp)) }
+                Spacer(modifier = Modifier.height(120.dp))
             }
-            Spacer(modifier = Modifier.height(120.dp))
         }
     }
 }
 
-private fun samplePosts(): List<SamplePost> = listOf(
-    SamplePost("Dylan Shore", "@iris", "Exploring quiet builds for loud ideas.", "2m"),
-    SamplePost("Dylan Shore", "@novap", "Late-night sprint, early-morning glow.", "7m"),
-    SamplePost("Dylan Shore", "@theo", "Shipping, but with intention.", "11m")
-)
+private fun formatStamp(createdAt: Long): String {
+    val now = System.currentTimeMillis()
+    val minutes = ((now - createdAt) / 60_000L).coerceAtLeast(0)
+    return when {
+        minutes < 1 -> "now"
+        minutes < 60 -> "${minutes}m"
+        minutes < 1_440 -> "${minutes / 60}h"
+        else -> "${minutes / 1_440}d"
+    }
+}

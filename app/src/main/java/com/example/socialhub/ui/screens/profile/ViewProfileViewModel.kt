@@ -4,12 +4,15 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.socialhub.data.local.dao.UserDao
+import com.example.socialhub.data.repository.PostRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 
 /**
@@ -22,6 +25,7 @@ import kotlinx.coroutines.flow.stateIn
 @HiltViewModel
 class ViewProfileViewModel @Inject constructor(
     private val userDao: UserDao,
+    private val postRepository: PostRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     // Extract the ID once; null means the route argument was missing or invalid.
@@ -32,13 +36,24 @@ class ViewProfileViewModel @Inject constructor(
      */
     val uiState: StateFlow<ProfileUiState> = when (userId) {
         // Missing argument: return a stable empty state rather than crashing.
-        null -> flowOf(ProfileUiState(user = null, isLoading = false))
-        else -> userDao.observeUser(userId)
-            // Convert Room emissions into a minimal UI state wrapper.
-            .map { user -> ProfileUiState(user = user, isLoading = false) }
+        null -> flowOf(ProfileUiState(user = null, posts = emptyList(), isLoading = false))
+        else -> combine(
+            userDao.observeUser(userId),
+            postRepository.observeByUser(userId)
+        ) { user, posts ->
+            ProfileUiState(user = user, posts = posts, isLoading = false)
+        }
+            .onStart {
+                // Refresh profile posts before emitting cached data.
+                try {
+                    postRepository.refreshPostsForUser(userId)
+                } catch (_: Exception) {
+                    // Network errors are non-fatal; cached posts still display.
+                }
+            }
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
-        ProfileUiState(user = null, isLoading = true)
+        ProfileUiState(user = null, posts = emptyList(), isLoading = true)
     )
 }
