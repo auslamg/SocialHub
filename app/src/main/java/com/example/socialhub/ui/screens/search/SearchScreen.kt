@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,14 +25,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.socialhub.ui.SocialHubScreenPadding
 import com.example.socialhub.ui.components.AnimatedGradientBackground
 import com.example.socialhub.ui.components.AppColors
 import com.example.socialhub.ui.components.DarkOutlinedTextField
+import com.example.socialhub.ui.navigation.AppDestination
 
 @Composable
 fun SearchScreen(
+    navController: NavHostController,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     // Search UI that queries the local user table by username prefix.
@@ -77,7 +81,15 @@ fun SearchScreen(
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     items(uiState.results, key = { it.id }) { user ->
-                        Row(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navController.navigate(
+                                        AppDestination.ViewProfile.createRoute(user.id)
+                                    )
+                                }
+                        ) {
                             AsyncImage(
                                 model = user.avatarUrl,
                                 contentDescription = "${user.name} avatar",

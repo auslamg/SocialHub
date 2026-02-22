@@ -48,6 +48,7 @@ fun ProfileContent(
                 ProfileHeader(
                     name = profile.name,
                     handle = "@${profile.username}",
+                    avatarUrl = profile.avatarUrl,
                     bio = profile.bio ?: "",
                     postsCount = profile.postsCount,
                     followersCount = profile.followersCount,
