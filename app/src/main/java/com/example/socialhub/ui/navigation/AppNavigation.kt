@@ -11,7 +11,6 @@ import androidx.navigation.navArgument
 import com.example.socialhub.R
 import com.example.socialhub.ui.components.AppColors
 import com.example.socialhub.ui.screens.hub.HubScreen
-import com.example.socialhub.ui.screens.hub.TrendingScreen
 import com.example.socialhub.ui.screens.login.CreateUserScreen
 import com.example.socialhub.ui.screens.post.CreatePostScreen
 import com.example.socialhub.ui.screens.profile.MyProfileScreen
@@ -25,7 +24,6 @@ sealed class AppDestination(
 ) {
     // Bottom nav destinations (route/label/icon) used across the app.
     data object Hub : AppDestination("hub", "Hub", R.drawable.ic_hub)
-    data object Trending : AppDestination("trending", "Trend", R.drawable.ic_trending)
     data object CreatePost : AppDestination("create_post", "Post", R.drawable.ic_create)
     data object Search : AppDestination("search", "Search", R.drawable.ic_search)
     data object MyProfile : AppDestination("my_profile", "Profile", R.drawable.ic_profile)
@@ -52,7 +50,6 @@ fun SocialHubNavHost(navController: NavHostController) {
         startDestination = AppDestination.Hub.route
     ) {
         composable(AppDestination.Hub.route) { HubScreen() }
-        composable(AppDestination.Trending.route) { TrendingScreen() }
         composable(AppDestination.CreatePost.route) { CreatePostScreen() }
         composable(AppDestination.Search.route) { SearchScreen(navController) }
         composable(AppDestination.MyProfile.route) { MyProfileScreen(navController) }

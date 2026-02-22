@@ -33,7 +33,6 @@ fun SocialHubApp() {
         // Bottom nav destinations; order defines the bar layout.
         val destinations = listOf(
             AppDestination.Hub,
-            AppDestination.Trending,
             AppDestination.CreatePost,
             AppDestination.Search,
             AppDestination.MyProfile
