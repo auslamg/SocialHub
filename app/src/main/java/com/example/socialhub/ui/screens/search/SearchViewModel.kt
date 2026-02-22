@@ -3,7 +3,7 @@ package com.example.socialhub.ui.screens.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.socialhub.data.local.entity.UserEntity
-import com.example.socialhub.data.remote.api.UserApi
+import com.example.socialhub.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.flow
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val userApi: UserApi
+    private val userRepository: UserRepository
 ) : ViewModel() {
     // Raw user input; kept immediate for responsive text field updates.
     //Kept separate from results to avoid delayed typing.
@@ -56,49 +56,7 @@ class SearchViewModel @Inject constructor(
     }
 
     private suspend fun fetchRemoteUsers(query: String): List<UserEntity> {
-        return try {
-            val remoteUsers = userApi.searchUsers(query)
-            remoteUsers.users.map { remote ->
-                val bio = buildBio(
-                    city = remote.address.city,
-                    country = remote.address.country,
-                    university = remote.university,
-                    companyName = remote.company.name
-                )
-                UserEntity(
-                    id = remote.id,
-                    username = remote.username,
-                    name = "${remote.firstName} ${remote.lastName}".trim(),
-                    email = remote.email,
-                    avatarUrl = "https://i.pravatar.cc/150?u=${remote.username}",
-                    bio = bio,
-                    followersCount = 0,
-                    followingCount = 0,
-                    postsCount = 0
-                )
-            }
-        } catch (_: Exception) {
-            emptyList()
-        }
-    }
-
-    private fun buildBio(
-        city: String,
-        country: String,
-        university: String,
-        companyName: String
-    ): String {
-        val location = listOf(city.trim(), country.trim())
-            .filter { it.isNotBlank() }
-            .joinToString(", ")
-        val lineOne = if (location.isNotBlank() && university.isNotBlank()) {
-            "$location - ${university.trim()}"
-        } else {
-            listOf(location, university.trim()).filter { it.isNotBlank() }.joinToString(" ")
-        }
-        return listOf(lineOne, companyName.trim())
-            .filter { it.isNotBlank() }
-            .joinToString("\n")
+        return userRepository.searchUsers(query)
     }
 }
 
