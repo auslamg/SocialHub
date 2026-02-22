@@ -59,7 +59,7 @@ fun SocialHubNavHost(
     // Central navigation graph. Keep routes in one place for consistency.
     NavHost(
         navController = navController,
-        startDestination = AppDestination.Hub.route
+        startDestination = AppDestination.Auth.route
     ) {
         composable(AppDestination.Hub.route) { HubScreen(navController) }
         composable(AppDestination.Auth.route) {
