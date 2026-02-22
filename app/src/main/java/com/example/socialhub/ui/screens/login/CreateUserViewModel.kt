@@ -14,8 +14,12 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
-// UI state for the Create User screen.
-// Single immutable state object and replace it on changes.
+/**
+ * UI state for the Create User screen.
+ *
+ * This is a single immutable object; every change produces a new copy to
+ * keep UI updates predictable and traceable.
+ */
 data class CreateUserUiState(
     val name: String = "",
     val username: String = "",
@@ -27,8 +31,15 @@ data class CreateUserUiState(
     val isSaving: Boolean = false
 )
 
-// Handles user creation and validation. Persists the user in Room and
-// marks them as the current user in the front-end session store (DataStore).
+/**
+ * Handles user creation and validation.
+ *
+ * Responsibilities:
+ * - Track form input and validation errors.
+ * - Persist the new user to Room.
+ * - Mark the created user as the current session in DataStore.
+ * - Emit a one-shot navigation event on success.
+ */
 @HiltViewModel
 class CreateUserViewModel @Inject constructor(
     private val userDao: UserDao,
@@ -51,6 +62,7 @@ class CreateUserViewModel @Inject constructor(
     fun onUsernameChange(value: String) {
         uiState = uiState.copy(
             username = value,
+            // Validate as the user types to surface issues early.
             usernameError = validateUsername(value)
         )
     }
@@ -62,6 +74,7 @@ class CreateUserViewModel @Inject constructor(
     fun onEmailChange(value: String) {
         uiState = uiState.copy(
             email = value,
+            // Keep error state in sync with the latest input.
             emailError = validateEmail(value)
         )
     }
@@ -70,6 +83,12 @@ class CreateUserViewModel @Inject constructor(
         uiState = uiState.copy(bio = value)
     }
 
+    /**
+     * Validates form fields and persists a new user.
+     *
+     * On success, this sets the newly created user as the current session
+     * and emits a navigation event for the screen to consume.
+     */
     fun registerUser() {
         // Validates and persists a new user, then marks them as current.
         val name = uiState.name.trim()
@@ -77,6 +96,7 @@ class CreateUserViewModel @Inject constructor(
         val email = uiState.email.trim()
         val usernameError = validateUsername(username)
         val emailError = validateEmail(email)
+        // Abort early if inputs are missing or invalid.
         if (name.isBlank() || username.isBlank() || usernameError != null || emailError != null) {
             uiState = uiState.copy(
                 usernameError = usernameError,
@@ -89,6 +109,7 @@ class CreateUserViewModel @Inject constructor(
             // Persisting might be slow; the UI disables the button while saving.
             uiState = uiState.copy(isSaving = true)
             if (userDao.existsUsername(username)) {
+                // Keep DB unique constraint behavior consistent with UI validation.
                 uiState = uiState.copy(
                     isSaving = false,
                     usernameError = "Username already taken"
@@ -116,7 +137,9 @@ class CreateUserViewModel @Inject constructor(
         }
     }
 
-    // Username validation: non-empty, alphanumeric + '_' or '-' only.
+    /**
+     * Username validation: non-empty, alphanumeric + '_' or '-' only.
+     */
     private fun validateUsername(value: String): String? {
         val trimmed = value.trim()
         if (trimmed.isBlank()) {
@@ -126,7 +149,9 @@ class CreateUserViewModel @Inject constructor(
         return if (valid) null else "Only letters, numbers, _ or -"
     }
 
-    // Email format: n(xxx.)+x+@+n(xxx.)+xxx
+    /**
+     * Email format: n(xxx.)+x+@+n(xxx.)+xxx
+     */
     private fun validateEmail(value: String): String? {
         val trimmed = value.trim()
         if (trimmed.isBlank()) {

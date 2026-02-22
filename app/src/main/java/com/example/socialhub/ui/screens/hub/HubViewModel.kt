@@ -13,21 +13,44 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+/**
+ * Orchestrates the Hub feed state by combining timeline posts with user details.
+ *
+ * Responsibilities:
+ * - Refresh the timeline on entry (network + Room).
+ * - Resolve post authors from cached users (Room) for display.
+ * - Expose a stable `StateFlow` for Compose to collect.
+ *
+ * Data flow:
+ * - `PostRepository.observeTimeline()` emits whenever posts change in Room.
+ * - `UserRepository.observeUsers()` emits whenever user rows change in Room.
+ * - `combine` merges both streams and formats UI models.
+ */
 @HiltViewModel
 class HubViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val userRepository: UserRepository
 ) : ViewModel() {
+    // Local loading flag surfaced to the UI alongside the list.
     private val isLoading = MutableStateFlow(true)
 
+    /**
+     * Stream of Hub UI state.
+     *
+     * Notes:
+     * - The list is capped at 20 to match the current feed contract.
+     * - User data is optional; placeholders are used while user lookups complete.
+     */
     val uiState: StateFlow<HubUiState> = combine(
         postRepository.observeTimeline(),
         userRepository.observeUsers(),
         isLoading
     ) { posts, users, loading ->
+        // Build a fast lookup table to avoid O(n^2) matching during mapping.
         val userMap = users.associateBy { it.id }
         HubUiState(
             posts = posts.take(20).map { post ->
+                // Resolve author metadata from the cache; fall back to placeholders.
                 val user = userMap[post.userId]
                 HubPost(
                     author = user?.name ?: "User ${post.userId}",
@@ -46,13 +69,21 @@ class HubViewModel @Inject constructor(
     )
 
     init {
+        // Kick off the initial refresh when the ViewModel is created.
         fetchPosts()
     }
 
+    /**
+     * Refreshes posts from the remote source, persists to Room, then fetches users.
+     *
+     * The user fetch is based on distinct userIds present in the refreshed posts.
+     * Errors are swallowed so the UI can continue to render cached data.
+     */
     private fun fetchPosts() {
         viewModelScope.launch {
             isLoading.value = true
             try {
+                // Refresh the timeline and then backfill user details used by the feed.
                 val entities = postRepository.refreshPosts(limit = 20)
                 userRepository.fetchUsersByIds(entities.map { it.userId }.distinct())
             } catch (_: Exception) {
@@ -63,6 +94,9 @@ class HubViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Converts a post timestamp to a compact relative label for the feed.
+     */
     private fun formatStamp(createdAt: Long): String {
         val now = System.currentTimeMillis()
         val minutes = ((now - createdAt) / 60_000L).coerceAtLeast(0)
@@ -75,11 +109,17 @@ class HubViewModel @Inject constructor(
     }
 }
 
+/**
+ * Immutable UI model consumed by the Hub screen.
+ */
 data class HubUiState(
     val posts: List<HubPost> = emptyList(),
     val isLoading: Boolean = false
 )
 
+/**
+ * Lightweight view model for a single feed card.
+ */
 data class HubPost(
     val author: String,
     val handle: String,
