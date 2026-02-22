@@ -2,9 +2,9 @@ package com.example.socialhub.ui.screens.post
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialhub.data.local.dao.UserDao
 import com.example.socialhub.data.local.session.CurrentUserStore
 import com.example.socialhub.data.repository.PostRepository
+import com.example.socialhub.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 class CreatePostViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val currentUserStore: CurrentUserStore,
-    private val userDao: UserDao
+    private val userRepository: UserRepository
 ) : ViewModel() {
     // Raw draft content that updates on each keystroke.
     private val contentFlow = MutableStateFlow("")
@@ -45,7 +45,7 @@ class CreatePostViewModel @Inject constructor(
             if (userId == null) {
                 flowOf(null)
             } else {
-                userDao.observeUser(userId)
+                userRepository.observeUser(userId)
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)

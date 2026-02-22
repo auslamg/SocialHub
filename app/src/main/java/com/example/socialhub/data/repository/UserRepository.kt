@@ -18,6 +18,24 @@ class UserRepository @Inject constructor(
 
     fun observeUsers(): Flow<List<UserEntity>> = userDao.observeUsers()
 
+    fun observeUser(userId: Long): Flow<UserEntity?> = userDao.observeUser(userId)
+
+    suspend fun getUser(userId: Long): UserEntity? = userDao.observeUser(userId).first()
+
+    suspend fun existsUsername(username: String): Boolean = userDao.existsUsername(username)
+
+    suspend fun upsertUser(user: UserEntity) {
+        userDao.upsert(user)
+    }
+
+    suspend fun updateUser(user: UserEntity) {
+        userDao.update(user)
+    }
+
+    suspend fun deleteUser(user: UserEntity) {
+        userDao.delete(user)
+    }
+
     suspend fun fetchUsersByIds(userIds: List<Long>) {
         for (userId in userIds) {
             if (!fetchedUserIds.add(userId)) {

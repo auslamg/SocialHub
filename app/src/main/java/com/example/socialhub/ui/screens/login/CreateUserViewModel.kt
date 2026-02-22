@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialhub.data.local.dao.UserDao
 import com.example.socialhub.data.local.entity.UserEntity
 import com.example.socialhub.data.local.session.CurrentUserStore
+import com.example.socialhub.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -42,7 +42,7 @@ data class CreateUserUiState(
  */
 @HiltViewModel
 class CreateUserViewModel @Inject constructor(
-    private val userDao: UserDao,
+    private val userRepository: UserRepository,
     private val currentUserStore: CurrentUserStore
 ) : ViewModel() {
     // One-shot navigation events for the UI.
@@ -108,7 +108,7 @@ class CreateUserViewModel @Inject constructor(
         viewModelScope.launch {
             // Persisting might be slow; the UI disables the button while saving.
             uiState = uiState.copy(isSaving = true)
-            if (userDao.existsUsername(username)) {
+            if (userRepository.existsUsername(username)) {
                 // Keep DB unique constraint behavior consistent with UI validation.
                 uiState = uiState.copy(
                     isSaving = false,
@@ -129,7 +129,7 @@ class CreateUserViewModel @Inject constructor(
                 followingCount = 0,
                 postsCount = 0
             )
-            userDao.upsert(user)
+            userRepository.upsertUser(user)
             currentUserStore.setCurrentUserId(user.id)
             uiState = uiState.copy(isSaving = false)
             // Emit navigation event to move to Profile.

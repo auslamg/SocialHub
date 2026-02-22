@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialhub.data.local.dao.UserDao
 import com.example.socialhub.data.local.entity.UserEntity
 import com.example.socialhub.data.local.session.CurrentUserStore
+import com.example.socialhub.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class EditUserViewModel @Inject constructor(
-    private val userDao: UserDao,
+    private val userRepository: UserRepository,
     private val currentUserStore: CurrentUserStore
 ) : ViewModel() {
     private val _navigation = MutableSharedFlow<EditUserNavigation>(extraBufferCapacity = 1)
@@ -32,7 +32,7 @@ class EditUserViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = currentUserStore.currentUserId.first()
             if (userId != null) {
-                val user = userDao.observeUser(userId).first()
+                val user = userRepository.getUser(userId)
                 if (user != null) {
                     currentUser = user
                     uiState = uiState.copy(
@@ -84,7 +84,7 @@ class EditUserViewModel @Inject constructor(
                 avatarUrl = uiState.avatarUrl.trim().ifBlank { null },
                 bio = uiState.bio.trim().ifBlank { null }
             )
-            userDao.update(updated)
+            userRepository.updateUser(updated)
             uiState = uiState.copy(isSaving = false)
             _navigation.tryEmit(EditUserNavigation.BackToProfile)
         }
@@ -94,7 +94,7 @@ class EditUserViewModel @Inject constructor(
         val user = currentUser ?: return
         viewModelScope.launch {
             uiState = uiState.copy(isDeleting = true)
-            userDao.delete(user)
+            userRepository.deleteUser(user)
             currentUserStore.clearCurrentUserId()
             uiState = uiState.copy(isDeleting = false)
             _navigation.tryEmit(EditUserNavigation.BackToProfile)

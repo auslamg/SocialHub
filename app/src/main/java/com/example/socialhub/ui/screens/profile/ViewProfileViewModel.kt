@@ -3,8 +3,8 @@ package com.example.socialhub.ui.screens.profile
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialhub.data.local.dao.UserDao
 import com.example.socialhub.data.repository.PostRepository
+import com.example.socialhub.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.stateIn
  */
 @HiltViewModel
 class ViewProfileViewModel @Inject constructor(
-    private val userDao: UserDao,
+    private val userRepository: UserRepository,
     private val postRepository: PostRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -38,7 +38,7 @@ class ViewProfileViewModel @Inject constructor(
         // Missing argument: return a stable empty state rather than crashing.
         null -> flowOf(ProfileUiState(user = null, posts = emptyList(), isLoading = false))
         else -> combine(
-            userDao.observeUser(userId),
+            userRepository.observeUser(userId),
             postRepository.observeByUser(userId)
         ) { user, posts ->
             ProfileUiState(user = user, posts = posts, isLoading = false)

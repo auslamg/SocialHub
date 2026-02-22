@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -139,23 +140,25 @@ fun EditUserScreen(
                 Text("Save changes", color = AppColors.Gradient2)
             }
             Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = { navController.popBackStack() },
-                colors = ButtonDefaults.buttonColors(containerColor = AppColors.PostCardBG),
-                shape = RoundedCornerShape(14.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Cancel", color = AppColors.WhiteText)
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = viewModel::deleteAccount,
-                colors = ButtonDefaults.buttonColors(containerColor = AppColors.AccentRed),
-                shape = RoundedCornerShape(14.dp),
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !uiState.isDeleting
-            ) {
-                Text("Delete account", color = AppColors.WhiteText)
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Button(
+                    onClick = { navController.popBackStack() },
+                    colors = ButtonDefaults.buttonColors(containerColor = AppColors.PostCardBG),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Cancel", color = AppColors.WhiteText)
+                }
+                Spacer(modifier = Modifier.size(12.dp))
+                Button(
+                    onClick = viewModel::deleteAccount,
+                    colors = ButtonDefaults.buttonColors(containerColor = AppColors.AccentRed),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.weight(1f),
+                    enabled = !uiState.isDeleting
+                ) {
+                    Text("Delete account", color = AppColors.WhiteText)
+                }
             }
             Spacer(modifier = Modifier.height(100.dp))
         }

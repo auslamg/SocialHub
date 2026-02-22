@@ -2,10 +2,10 @@ package com.example.socialhub.ui.screens.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialhub.data.local.dao.UserDao
 import com.example.socialhub.data.local.entity.UserEntity
 import com.example.socialhub.data.local.session.CurrentUserStore
 import com.example.socialhub.data.repository.PostRepository
+import com.example.socialhub.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -40,7 +40,7 @@ data class ProfileUiState(
  */
 @HiltViewModel
 class MyProfileViewModel @Inject constructor(
-    private val userDao: UserDao,
+    private val userRepository: UserRepository,
     private val currentUserStore: CurrentUserStore,
     private val postRepository: PostRepository
 ) : ViewModel() {
@@ -56,7 +56,7 @@ class MyProfileViewModel @Inject constructor(
             } else {
                 // Session exists: observe the row so UI updates if it changes.
                 combine(
-                    userDao.observeUser(userId),
+                    userRepository.observeUser(userId),
                     postRepository.observeByUser(userId)
                 ) { user, posts ->
                     ProfileUiState(user = user, posts = posts, isLoading = false)

@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.socialhub.data.local.entity.PostEntity
-import com.example.socialhub.data.local.dao.UserDao
 import com.example.socialhub.data.local.session.CurrentUserStore
 import com.example.socialhub.data.repository.PostRepository
+import com.example.socialhub.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 class EditPostViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val currentUserStore: CurrentUserStore,
-    private val userDao: UserDao,
+    private val userRepository: UserRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val postId: Long? = savedStateHandle.get<Long>("postId")
@@ -50,7 +50,7 @@ class EditPostViewModel @Inject constructor(
             if (userId == null) {
                 flowOf(null)
             } else {
-                userDao.observeUser(userId)
+                userRepository.observeUser(userId)
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
