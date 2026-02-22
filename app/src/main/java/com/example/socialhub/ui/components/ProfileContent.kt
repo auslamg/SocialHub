@@ -125,6 +125,7 @@ fun ProfileContent(
                             stamp = formatStamp(post.createdAt),
                             avatarUrl = authorAvatar,
                             onHandleClick = handleClick,
+                            showEdit = showLogout,
                             modifier = Modifier.fillMaxWidth()
                         )
                     }

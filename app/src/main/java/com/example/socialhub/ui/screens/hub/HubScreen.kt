@@ -67,6 +67,7 @@ fun HubScreen(
                             dislikeCount = post.dislikeCount,
                             stamp = post.stamp,
                             avatarUrl = post.avatarUrl,
+                            showEdit = post.isOwner,
                             onHandleClick = {
                                 navController.navigate(
                                     AppDestination.ViewProfile.createRoute(post.userId)

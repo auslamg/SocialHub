@@ -2,6 +2,7 @@ package com.example.socialhub.ui.screens.hub
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.socialhub.data.local.session.CurrentUserStore
 import com.example.socialhub.data.repository.PostRepository
 import com.example.socialhub.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +30,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class HubViewModel @Inject constructor(
     private val postRepository: PostRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val currentUserStore: CurrentUserStore
 ) : ViewModel() {
     // Local loading flag surfaced to the UI alongside the list.
     private val isLoading = MutableStateFlow(true)
@@ -44,14 +46,16 @@ class HubViewModel @Inject constructor(
     val uiState: StateFlow<HubUiState> = combine(
         postRepository.observeTimeline(),
         userRepository.observeUsers(),
+        currentUserStore.currentUserId,
         isLoading
-    ) { posts, users, loading ->
+    ) { posts, users, currentUserId, loading ->
         // Build a fast lookup table to avoid O(n^2) matching during mapping.
         val userMap = users.associateBy { it.id }
         HubUiState(
             posts = posts.take(20).map { post ->
                 // Resolve author metadata from the cache; fall back to placeholders.
                 val user = userMap[post.userId]
+                val isOwner = currentUserId != null && post.userId == currentUserId
                 HubPost(
                     userId = post.userId,
                     author = user?.name ?: "User ${post.userId}",
@@ -60,7 +64,8 @@ class HubViewModel @Inject constructor(
                     body = post.content,
                     likeCount = post.likeCount,
                     dislikeCount = post.dislikeCount,
-                    stamp = formatStamp(post.createdAt)
+                    stamp = formatStamp(post.createdAt),
+                    isOwner = isOwner
                 )
             },
             isLoading = loading
@@ -131,5 +136,6 @@ data class HubPost(
     val body: String,
     val likeCount: Int,
     val dislikeCount: Int,
-    val stamp: String
+    val stamp: String,
+    val isOwner: Boolean
 )

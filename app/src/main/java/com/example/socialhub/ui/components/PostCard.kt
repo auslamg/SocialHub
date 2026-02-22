@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +42,8 @@ fun PostCard(
     stamp: String,
     avatarUrl: String? = null,
     onHandleClick: (() -> Unit)? = null,
+    showEdit: Boolean = false,
+    onEditClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     PostCardFrame(
@@ -51,6 +54,8 @@ fun PostCard(
         likeCount = likeCount,
         dislikeCount = dislikeCount,
         onHandleClick = onHandleClick,
+        showEdit = showEdit,
+        onEditClick = onEditClick,
         modifier = modifier
     ) {
         Text(
@@ -82,6 +87,8 @@ fun CreatePostCard(
         likeCount = 0,
         dislikeCount = 0,
         onHandleClick = null,
+        showEdit = false,
+        onEditClick = null,
         modifier = modifier
     ) {
         DarkOutlinedTextField(
@@ -107,6 +114,8 @@ private fun PostCardFrame(
     likeCount: Int,
     dislikeCount: Int,
     onHandleClick: (() -> Unit)?,
+    showEdit: Boolean,
+    onEditClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
     bodyContent: @Composable () -> Unit
 ) {
@@ -171,6 +180,17 @@ private fun PostCardFrame(
                     fontSize = 11.sp,
                     color = AppColors.LightGreyText
                 )
+                if (showEdit) {
+                    Spacer(modifier = Modifier.size(8.dp))
+                    IconButton(onClick = { onEditClick?.invoke() }) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_settings),
+                            contentDescription = "Edit post",
+                            modifier = Modifier.size(16.dp),
+                            colorFilter = ColorFilter.tint(AppColors.WhiteText)
+                        )
+                    }
+                }
             }
             Spacer(modifier = Modifier.height(12.dp))
             bodyContent()

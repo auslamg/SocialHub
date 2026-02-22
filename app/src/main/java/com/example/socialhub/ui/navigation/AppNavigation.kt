@@ -32,7 +32,7 @@ sealed class AppDestination(
     data object ViewProfile : AppDestination("view_profile/{userId}", "Profile", R.drawable.ic_profile) {
         fun createRoute(userId: Long): String = "view_profile/$userId"
     }
-    data object CreateUser : AppDestination("create_user", "Join", R.drawable.ic_create_user)
+    data object CreateUser : AppDestination("create_user", "Join", R.drawable.ic_settings)
 
     @Composable
     fun navColors() = NavigationBarItemDefaults.colors(
