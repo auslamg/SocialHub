@@ -10,19 +10,26 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.socialhub.ui.SocialHubScreenPadding
 import com.example.socialhub.ui.components.AnimatedGradientBackground
 import com.example.socialhub.ui.components.AppColors
 import com.example.socialhub.ui.components.PostCard
 
 @Composable
-fun HubScreen() {
-    // Home feed screen using local sample data.
+fun HubScreen(
+    viewModel: HubViewModel = hiltViewModel()
+) {
+    // Home feed screen that loads posts on entry.
+    val uiState by viewModel.uiState.collectAsState()
+
     AnimatedGradientBackground {
         Column(modifier = Modifier.padding(SocialHubScreenPadding())) {
             Text(
@@ -39,17 +46,26 @@ fun HubScreen() {
                 color = AppColors.ViridianText
             )
             Spacer(modifier = Modifier.height(16.dp))
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                items(samplePosts()) { post ->
-                    PostCard(
-                        author = post.author,
-                        handle = post.handle,
-                        body = post.body,
-                        stamp = post.stamp,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+            if (uiState.isLoading && uiState.posts.isEmpty()) {
+                Text(
+                    text = "Loading posts...",
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 12.sp,
+                    color = AppColors.ViridianText
+                )
+            } else {
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                    items(uiState.posts) { post ->
+                        PostCard(
+                            author = post.author,
+                            handle = post.handle,
+                            body = post.body,
+                            stamp = post.stamp,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    item { Spacer(modifier = Modifier.height(120.dp)) }
                 }
-                item { Spacer(modifier = Modifier.height(120.dp)) }
             }
         }
     }

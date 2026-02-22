@@ -1,5 +1,6 @@
 package com.example.socialhub.data.remote
 
+import com.example.socialhub.data.remote.api.PostApi
 import com.example.socialhub.data.remote.api.UserApi
 import dagger.Module
 import dagger.Provides
@@ -27,5 +28,11 @@ object RemoteModule {
     @Singleton
     fun provideUserApi(retrofit: Retrofit): UserApi {
         return retrofit.create(UserApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providePostApi(retrofit: Retrofit): PostApi {
+        return retrofit.create(PostApi::class.java)
     }
 }

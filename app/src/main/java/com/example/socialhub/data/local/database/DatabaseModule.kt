@@ -2,6 +2,7 @@ package com.example.socialhub.data.local.database
 
 import android.content.Context
 import androidx.room.Room
+import com.example.socialhub.data.local.dao.PostDao
 import com.example.socialhub.data.local.dao.UserDao
 import dagger.Module
 import dagger.Provides
@@ -30,5 +31,10 @@ object DatabaseModule {
     fun provideUserDao(database: SocialHubDatabase): UserDao {
         // DAOs are lightweight; provide directly from Room.
         return database.userDao()
+    }
+
+    @Provides
+    fun providePostDao(database: SocialHubDatabase): PostDao {
+        return database.postDao()
     }
 }
