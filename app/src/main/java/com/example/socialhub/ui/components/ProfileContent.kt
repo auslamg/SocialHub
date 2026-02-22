@@ -47,6 +47,24 @@ fun ProfileContent(
                 color = AppColors.ViridianText
             )
             Spacer(modifier = Modifier.height(16.dp))
+            val errorMessage = uiState.errorMessage
+            if (uiState.isLoading && uiState.user == null) {
+                Text(
+                    text = "Loading profile...",
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 12.sp,
+                    color = AppColors.ViridianText
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            } else if (errorMessage != null && uiState.user == null) {
+                Text(
+                    text = errorMessage,
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 12.sp,
+                    color = AppColors.AccentRed
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
             if (uiState.user != null) {
                 val profile = uiState.user
                 ProfileHeader(
@@ -109,6 +127,24 @@ fun ProfileContent(
                     color = AppColors.ViridianText
                 )
                 Spacer(modifier = Modifier.height(10.dp))
+                if (uiState.isLoading) {
+                    Text(
+                        text = "Updating profile...",
+                        fontFamily = FontFamily.Monospace,
+                        fontSize = 12.sp,
+                        color = AppColors.ViridianText
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+                if (errorMessage != null) {
+                    Text(
+                        text = errorMessage,
+                        fontFamily = FontFamily.Monospace,
+                        fontSize = 12.sp,
+                        color = AppColors.AccentRed
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
                 val authorName = uiState.user.name
                 val authorHandle = "@${uiState.user.username}"
                 val authorAvatar = uiState.user.avatarUrl

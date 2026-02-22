@@ -8,6 +8,7 @@ import com.example.socialhub.data.repository.PostRepository
 import com.example.socialhub.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 /**
  * UI state for the Profile screen.
@@ -27,7 +29,8 @@ import kotlinx.coroutines.launch
 data class ProfileUiState(
     val user: UserEntity?,
     val posts: List<com.example.socialhub.data.local.entity.PostEntity>,
-    val isLoading: Boolean
+    val isLoading: Boolean,
+    val errorMessage: String?
 )
 
 /**
@@ -44,6 +47,9 @@ class MyProfileViewModel @Inject constructor(
     private val currentUserStore: CurrentUserStore,
     private val postRepository: PostRepository
 ) : ViewModel() {
+    private val isLoading = MutableStateFlow(false)
+    private val errorMessage = MutableStateFlow<String?>(null)
+
     /**
      * Resolve the current user id to a full user record from Room.
      * `flatMapLatest` re-subscribes to Room when the current user id changes.
@@ -52,21 +58,48 @@ class MyProfileViewModel @Inject constructor(
         .flatMapLatest { userId ->
             if (userId == null) {
                 // No session: expose null user and stop loading.
-                flowOf(ProfileUiState(user = null, posts = emptyList(), isLoading = false))
+                flowOf(
+                    ProfileUiState(
+                        user = null,
+                        posts = emptyList(),
+                        isLoading = false,
+                        errorMessage = null
+                    )
+                )
             } else {
                 // Session exists: observe the row so UI updates if it changes.
                 combine(
                     userRepository.observeUser(userId),
-                    postRepository.observeByUser(userId)
-                ) { user, posts ->
-                    ProfileUiState(user = user, posts = posts, isLoading = false)
+                    postRepository.observeByUser(userId),
+                    isLoading,
+                    errorMessage
+                ) { user, posts, loading, error ->
+                    ProfileUiState(
+                        user = user,
+                        posts = posts,
+                        isLoading = loading,
+                        errorMessage = error
+                    )
                 }
                     .onStart {
                         // Refresh profile posts before emitting cached data.
+                        isLoading.value = true
+                        errorMessage.value = null
                         try {
                             postRepository.refreshPostsForUser(userId)
-                        } catch (_: Exception) {
+                        } catch (error: Exception) {
                             // Network errors are non-fatal; cached posts still display.
+                            val isLocalOnly = when (error) {
+                                is HttpException -> error.code() == 404 &&
+                                    userRepository.getUser(userId) != null
+                                else -> false
+                            }
+                            if (!isLocalOnly) {
+                                errorMessage.value = error.message
+                                    ?: "Couldn't load profile updates."
+                            }
+                        } finally {
+                            isLoading.value = false
                         }
                     }
             }
@@ -75,7 +108,12 @@ class MyProfileViewModel @Inject constructor(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
             // Start in a loading state until DataStore emits the first value.
-            ProfileUiState(user = null, posts = emptyList(), isLoading = true)
+            ProfileUiState(
+                user = null,
+                posts = emptyList(),
+                isLoading = true,
+                errorMessage = null
+            )
         )
 
     /**
