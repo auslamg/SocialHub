@@ -54,7 +54,7 @@ fun ProfileContent(
                     handle = "@${profile.username}",
                     avatarUrl = profile.avatarUrl,
                     bio = profile.bio ?: "",
-                    postsCount = profile.postsCount,
+                    postsCount = uiState.posts.size,
                     followersCount = profile.followersCount,
                     followingCount = profile.followingCount
                 )
