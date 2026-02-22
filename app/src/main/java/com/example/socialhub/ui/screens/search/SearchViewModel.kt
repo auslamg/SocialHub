@@ -32,6 +32,9 @@ class SearchViewModel @Inject constructor(
     // Kept separate from results to avoid delayed typing.
     private val queryFlow = MutableStateFlow("")
 
+    private val isLoading = MutableStateFlow(false)
+    private val errorMessage = MutableStateFlow<String?>(null)
+
     // Debounced results to avoid querying on every keystroke.
     // Debounce waits for the user to stop typing before running the network call.
     private val resultsFlow = queryFlow
@@ -40,11 +43,21 @@ class SearchViewModel @Inject constructor(
             val trimmed = query.trim()
             if (trimmed.isBlank()) {
                 // Empty query -> no results and no DB work.
+                isLoading.value = false
+                errorMessage.value = null
                 flowOf(emptyList())
             } else {
                 // Cancel any in-flight search when a new query arrives.
                 flow {
-                    emit(fetchRemoteUsers(trimmed))
+                    isLoading.value = true
+                    errorMessage.value = null
+                    try {
+                        val result = fetchRemoteUsers(trimmed)
+                        errorMessage.value = result.errorMessage
+                        emit(result.users)
+                    } finally {
+                        isLoading.value = false
+                    }
                 }
             }
         }
@@ -54,8 +67,13 @@ class SearchViewModel @Inject constructor(
      *
      * The flow is kept hot with `stateIn` so Compose always has a current value.
      */
-    val uiState: StateFlow<SearchUiState> = combine(queryFlow, resultsFlow) { query, results ->
-        SearchUiState(query = query, results = results)
+    val uiState: StateFlow<SearchUiState> = combine(
+        queryFlow,
+        resultsFlow,
+        isLoading,
+        errorMessage
+    ) { query, results, loading, error ->
+        SearchUiState(query = query, results = results, isLoading = loading, errorMessage = error)
     }
         .stateIn(
             viewModelScope,
@@ -76,7 +94,7 @@ class SearchViewModel @Inject constructor(
      * Runs a remote search and maps results to local UI entities.
      * Errors are swallowed so the UI can keep operating gracefully.
      */
-    private suspend fun fetchRemoteUsers(query: String): List<UserEntity> {
+    private suspend fun fetchRemoteUsers(query: String): com.example.socialhub.data.repository.SearchUsersResult {
         // Delegate mapping and error handling to the repository layer.
         return userRepository.searchUsers(query)
     }
@@ -87,5 +105,7 @@ class SearchViewModel @Inject constructor(
  */
 data class SearchUiState(
     val query: String = "",
-    val results: List<UserEntity> = emptyList()
+    val results: List<UserEntity> = emptyList(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
 )

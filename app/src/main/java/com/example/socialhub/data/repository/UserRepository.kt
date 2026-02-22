@@ -32,24 +32,33 @@ class UserRepository @Inject constructor(
         }
     }
 
-    suspend fun searchUsers(query: String): List<UserEntity> {
+    suspend fun searchUsers(query: String): SearchUsersResult {
         val trimmed = query.trim()
         if (trimmed.isBlank()) {
-            return emptyList()
+            return SearchUsersResult(emptyList(), null)
         }
 
         // Local lookup for instant results (cached / user-created).
         val localResults = fetchLocalUsers(trimmed)
 
         // Remote lookup for network-backed results (persisted to Room).
-        val remoteResults = fetchRemoteUsers(trimmed)
+        var errorMessage: String? = null
+        val remoteResults = try {
+            fetchRemoteUsers(trimmed)
+        } catch (error: Exception) {
+            errorMessage = error.message ?: "Couldn't load search results."
+            emptyList()
+        }
         if (remoteResults.isNotEmpty()) {
             // Persist to DB entities.
             userDao.upsertAll(remoteResults)
         }
 
         // Merge + dedupe by id.
-        return (localResults + remoteResults).distinctBy { it.id }
+        return SearchUsersResult(
+            users = (localResults + remoteResults).distinctBy { it.id },
+            errorMessage = errorMessage
+        )
     }
 
     private suspend fun fetchLocalUsers(query: String): List<UserEntity> {
@@ -61,12 +70,8 @@ class UserRepository @Inject constructor(
     }
 
     private suspend fun fetchRemoteUsers(query: String): List<UserEntity> {
-        return try {
-            userApi.searchUsers(query).users.map { remote ->
-                remote.toEntity()
-            }
-        } catch (_: Exception) {
-            emptyList()
+        return userApi.searchUsers(query).users.map { remote ->
+            remote.toEntity()
         }
     }
 
@@ -109,3 +114,8 @@ class UserRepository @Inject constructor(
             .joinToString("\n")
     }
 }
+
+data class SearchUsersResult(
+    val users: List<UserEntity>,
+    val errorMessage: String?
+)

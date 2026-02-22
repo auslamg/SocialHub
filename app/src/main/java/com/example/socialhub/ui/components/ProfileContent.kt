@@ -41,7 +41,7 @@ fun ProfileContent(
                 color = AppColors.WhiteText
             )
             Text(
-                text = "Instagram-style grid with highlights.",
+                text = "User data and posts.",
                 fontFamily = FontFamily.Monospace,
                 fontSize = 12.sp,
                 color = AppColors.ViridianText

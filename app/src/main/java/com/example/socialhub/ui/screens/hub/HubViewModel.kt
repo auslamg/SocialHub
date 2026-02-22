@@ -35,6 +35,7 @@ class HubViewModel @Inject constructor(
 ) : ViewModel() {
     // Local loading flag surfaced to the UI alongside the list.
     private val isLoading = MutableStateFlow(true)
+    private val errorMessage = MutableStateFlow<String?>(null)
 
     /**
      * Stream of Hub UI state.
@@ -47,8 +48,9 @@ class HubViewModel @Inject constructor(
         postRepository.observeTimeline(),
         userRepository.observeUsers(),
         currentUserStore.currentUserId,
-        isLoading
-    ) { posts, users, currentUserId, loading ->
+        isLoading,
+        errorMessage
+    ) { posts, users, currentUserId, loading, error ->
         // Build a fast lookup table to avoid O(n^2) matching during mapping.
         val userMap = users.associateBy { it.id }
         HubUiState(
@@ -69,7 +71,8 @@ class HubViewModel @Inject constructor(
                     isOwner = isOwner
                 )
             },
-            isLoading = loading
+            isLoading = loading,
+            errorMessage = error
         )
     }.stateIn(
         viewModelScope,
@@ -91,12 +94,14 @@ class HubViewModel @Inject constructor(
     private fun fetchPosts() {
         viewModelScope.launch {
             isLoading.value = true
+            errorMessage.value = null
             try {
                 // Refresh the timeline and then backfill user details used by the feed.
                 val entities = postRepository.refreshPosts(limit = 20)
                 userRepository.fetchUsersByIds(entities.map { it.userId }.distinct())
-            } catch (_: Exception) {
+            } catch (error: Exception) {
                 // Network errors are non-fatal; cached posts still display.
+                errorMessage.value = error.message ?: "Couldn't load posts. Check your connection."
             } finally {
                 isLoading.value = false
             }
@@ -123,7 +128,8 @@ class HubViewModel @Inject constructor(
  */
 data class HubUiState(
     val posts: List<HubPost> = emptyList(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
 )
 
 /**

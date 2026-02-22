@@ -43,12 +43,13 @@ fun HubScreen(
                 color = AppColors.WhiteText
             )
             Text(
-                text = "Infinite feed, straight from your circle.",
+                text = "Your feed, straight from your circle.",
                 fontFamily = FontFamily.Monospace,
                 fontSize = 12.sp,
                 color = AppColors.ViridianText
             )
             Spacer(modifier = Modifier.height(16.dp))
+            val errorMessage = uiState.errorMessage
             if (uiState.isLoading && uiState.posts.isEmpty()) {
                 Text(
                     text = "Loading posts...",
@@ -56,8 +57,35 @@ fun HubScreen(
                     fontSize = 12.sp,
                     color = AppColors.ViridianText
                 )
+            } else if (errorMessage != null && uiState.posts.isEmpty()) {
+                Text(
+                    text = errorMessage,
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 12.sp,
+                    color = AppColors.AccentRed
+                )
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                    if (uiState.isLoading) {
+                        item {
+                            Text(
+                                text = "Updating feed...",
+                                fontFamily = FontFamily.Monospace,
+                                fontSize = 12.sp,
+                                color = AppColors.ViridianText
+                            )
+                        }
+                    }
+                    if (errorMessage != null) {
+                        item {
+                            Text(
+                                text = errorMessage,
+                                fontFamily = FontFamily.Monospace,
+                                fontSize = 12.sp,
+                                color = AppColors.AccentRed
+                            )
+                        }
+                    }
                     items(uiState.posts) { post ->
                         PostCard(
                             author = post.author,

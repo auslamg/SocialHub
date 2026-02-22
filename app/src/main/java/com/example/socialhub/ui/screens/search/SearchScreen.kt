@@ -64,12 +64,27 @@ fun SearchScreen(
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(12.dp))
+            val errorMessage = uiState.errorMessage
             if (uiState.query.isBlank()) {
                 Text(
                     text = "Start typing to see results.",
                     fontFamily = FontFamily.Monospace,
                     fontSize = 12.sp,
                     color = AppColors.ViridianText
+                )
+            } else if (uiState.isLoading && uiState.results.isEmpty()) {
+                Text(
+                    text = "Searching...",
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 12.sp,
+                    color = AppColors.ViridianText
+                )
+            } else if (errorMessage != null && uiState.results.isEmpty()) {
+                Text(
+                    text = errorMessage,
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 12.sp,
+                    color = AppColors.AccentRed
                 )
             } else if (uiState.results.isEmpty()) {
                 Text(
@@ -80,6 +95,26 @@ fun SearchScreen(
                 )
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    if (uiState.isLoading) {
+                        item {
+                            Text(
+                                text = "Updating results...",
+                                fontFamily = FontFamily.Monospace,
+                                fontSize = 12.sp,
+                                color = AppColors.ViridianText
+                            )
+                        }
+                    }
+                    if (errorMessage != null) {
+                        item {
+                            Text(
+                                text = errorMessage,
+                                fontFamily = FontFamily.Monospace,
+                                fontSize = 12.sp,
+                                color = AppColors.AccentRed
+                            )
+                        }
+                    }
                     items(uiState.results, key = { it.id }) { user ->
                         Row(
                             modifier = Modifier
