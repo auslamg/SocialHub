@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import kotlin.math.roundToInt
 
 // Centralized palette used across Compose screens.
 object AppColors {
@@ -45,13 +46,18 @@ fun AnimatedGradientBackground(
     val transition = rememberInfiniteTransition(label = "bg")
     val shift by transition.animateFloat(
         initialValue = 0f,
-        targetValue = 3f,
+        targetValue = 2f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 3000, easing = EaseInOut),
             repeatMode = RepeatMode.Reverse
         ),
         label = "shift"
     )
+    // Quantize the shift to reduce how often the gradient changes.
+    // Increase `stepsPerUnit` for smoother motion (more updates);
+    // decrease it for fewer updates (lower CPU/GPU cost).
+    val stepsPerUnit = 10f
+    val quantizedShift = (shift * stepsPerUnit).roundToInt() / stepsPerUnit
     val brush = Brush.linearGradient(
         colors = listOf(
             AppColors.Gradient1,
@@ -60,8 +66,8 @@ fun AnimatedGradientBackground(
             AppColors.Gradient2,
             AppColors.Gradient1
         ),
-        start = Offset(0f, 200f * shift),
-        end = Offset(1200f, 1200f + 200f * shift)
+        start = Offset(0f, 200f * quantizedShift),
+        end = Offset(1200f, 1200f + 200f * quantizedShift)
     )
     Box(
         modifier = modifier
