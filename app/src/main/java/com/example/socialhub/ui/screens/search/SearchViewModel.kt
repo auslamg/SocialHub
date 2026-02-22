@@ -19,10 +19,19 @@ import kotlinx.coroutines.flow.flow
 /**
  * Handles search query state and API-driven user lookup.
  *
- * Responsibilities:
- * - Track raw query input for the TextField.
- * - Debounce input to reduce network load.
- * - Execute remote search and expose results as UI state.
+ * Data sources:
+ * - Query input: `queryFlow` (mutable input state).
+ * - Results: `UserRepository.searchUsers()` (local cache + remote API).
+ *
+ * UI contract:
+ * - Emits a `StateFlow<SearchUiState>` with query, results, loading, and error.
+ * - Keeps input responsive while debouncing remote searches.
+ *
+ * Internal flow:
+ * 1) User types -> `queryFlow` updates immediately.
+ * 2) Debounce waits for typing to pause before hitting the repository.
+ * 3) Repository returns results + optional error message.
+ * 4) Combine input/results/loading/error into a single UI model.
  */
 @HiltViewModel
 class SearchViewModel @Inject constructor(
@@ -32,7 +41,9 @@ class SearchViewModel @Inject constructor(
     // Kept separate from results to avoid delayed typing.
     private val queryFlow = MutableStateFlow("")
 
+    // Toggles the inline loading indicator in the UI.
     private val isLoading = MutableStateFlow(false)
+    // Holds the latest error for the current query.
     private val errorMessage = MutableStateFlow<String?>(null)
 
     // Debounced results to avoid querying on every keystroke.
@@ -52,6 +63,7 @@ class SearchViewModel @Inject constructor(
                     isLoading.value = true
                     errorMessage.value = null
                     try {
+                        // Repository returns users + optional error.
                         val result = fetchRemoteUsers(trimmed)
                         errorMessage.value = result.errorMessage
                         emit(result.users)
@@ -65,7 +77,8 @@ class SearchViewModel @Inject constructor(
     /**
      * Combined UI state exposed to the screen.
      *
-     * The flow is kept hot with `stateIn` so Compose always has a current value.
+     * `stateIn` keeps the flow hot so Compose always has a current value,
+     * even after configuration changes.
      */
     val uiState: StateFlow<SearchUiState> = combine(
         queryFlow,

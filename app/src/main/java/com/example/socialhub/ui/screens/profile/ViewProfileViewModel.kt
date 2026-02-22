@@ -20,9 +20,19 @@ import retrofit2.HttpException
 /**
  * Loads another user's profile by ID from the navigation route.
  *
- * Responsibilities:
- * - Read the `userId` argument from `SavedStateHandle`.
- * - Expose a `ProfileUiState` stream for the View Profile screen.
+ * Data sources:
+ * - Route argument: `SavedStateHandle["userId"]`.
+ * - User record: `UserRepository.observeUser()`.
+ * - Profile posts: `PostRepository.observeByUser()` + refresh.
+ *
+ * UI contract:
+ * - Emits a `StateFlow<ProfileUiState>` with loading/error flags.
+ * - Keeps cached data visible while refresh runs in the background.
+ *
+ * Internal flow:
+ * 1) Resolve the `userId` once from the nav back stack.
+ * 2) Combine user + posts + flags into a stable UI model.
+ * 3) Trigger a refresh in `onStart` to backfill from the network.
  */
 @HiltViewModel
 class ViewProfileViewModel @Inject constructor(
@@ -30,7 +40,9 @@ class ViewProfileViewModel @Inject constructor(
     private val postRepository: PostRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+    // Toggles the inline loading indicator.
     private val isLoading = MutableStateFlow(false)
+    // Stores the last refresh error, if any.
     private val errorMessage = MutableStateFlow<String?>(null)
 
     // Extract the ID once; null means the route argument was missing or invalid.

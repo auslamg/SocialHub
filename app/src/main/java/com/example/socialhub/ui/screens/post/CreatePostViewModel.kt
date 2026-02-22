@@ -19,11 +19,20 @@ import kotlinx.coroutines.launch
 /**
  * Manages Create Post form state, validation, and persistence.
  *
- * Responsibilities:
- * - Track draft content locally in a StateFlow.
- * - Validate length constraints and guest access rules.
- * - Persist valid posts to Room through the repository.
- * - Expose a single UI state stream for Compose to collect.
+ * Data sources:
+ * - Session: `CurrentUserStore.currentUserId` (guest vs signed-in).
+ * - User details: `UserRepository.observeUser()` for display metadata.
+ * - Posts: `PostRepository.createLocalPost()` for persistence.
+ *
+ * UI contract:
+ * - Exposes a `StateFlow<CreatePostUiState>` with content, validation, and user metadata.
+ * - Disables posting for guests and while saving.
+ *
+ * Internal flow:
+ * 1) `contentFlow` tracks the draft and updates on each keystroke.
+ * 2) `currentUserId` is derived from DataStore and drives `currentUser`.
+ * 3) `combine` merges draft + save state + user into one UI model.
+ * 4) `submitPost()` validates and persists, then clears the draft.
  */
 @HiltViewModel
 class CreatePostViewModel @Inject constructor(
@@ -56,6 +65,7 @@ class CreatePostViewModel @Inject constructor(
      * Notes:
      * - `isGuest` disables posting for unauthenticated users.
      * - `canPost` is the single source of truth for button enablement.
+     * - User metadata is null when the session is missing or still loading.
      */
     val uiState: StateFlow<CreatePostUiState> = combine(
         contentFlow,

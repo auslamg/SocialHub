@@ -32,13 +32,21 @@ data class CreateUserUiState(
 )
 
 /**
- * Handles user creation and validation.
+ * Handles user creation and validation for the onboarding flow.
  *
- * Responsibilities:
- * - Track form input and validation errors.
- * - Persist the new user to Room.
- * - Mark the created user as the current session in DataStore.
- * - Emit a one-shot navigation event on success.
+ * Data sources:
+ * - `UserRepository`: verifies uniqueness and persists the user.
+ * - `CurrentUserStore`: records the active session user id.
+ *
+ * UI contract:
+ * - Exposes `CreateUserUiState` via Compose `mutableStateOf`.
+ * - Emits a one-shot navigation event when a user is successfully created.
+ *
+ * Internal flow:
+ * 1) Field updates mutate `uiState` directly for instant UI response.
+ * 2) `registerUser()` validates input and blocks on invalid data.
+ * 3) Repository check ensures username uniqueness.
+ * 4) User is persisted, session is updated, and a navigation event is emitted.
  */
 @HiltViewModel
 class CreateUserViewModel @Inject constructor(

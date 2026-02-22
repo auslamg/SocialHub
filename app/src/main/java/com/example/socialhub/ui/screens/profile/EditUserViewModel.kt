@@ -15,26 +15,41 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+/**
+ * Drives the Edit Profile screen state and persistence.
+ *
+ * Flow summary:
+ * - Pull the current user id from `CurrentUserStore` on init.
+ * - Load the user from `UserRepository` and hydrate the form fields.
+ * - Track mutable form state via Compose `mutableStateOf` for instant UI updates.
+ * - Save/delete operations run in `viewModelScope` to avoid blocking the UI.
+ * - Emits one-shot navigation events through `SharedFlow`.
+ */
 @HiltViewModel
 class EditUserViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val currentUserStore: CurrentUserStore
 ) : ViewModel() {
+    // One-time navigation events; not replayed on configuration changes.
     private val _navigation = MutableSharedFlow<EditUserNavigation>(extraBufferCapacity = 1)
     val navigation = _navigation.asSharedFlow()
 
+    // Backing state for the form fields rendered by Compose.
     var uiState by mutableStateOf(EditUserUiState())
         private set
 
+    // Cached user record so updates/deletes use the original id.
     private var currentUser: UserEntity? = null
 
     init {
         viewModelScope.launch {
+            // Resolve the current session to a user record, if any.
             val userId = currentUserStore.currentUserId.first()
             if (userId != null) {
                 val user = userRepository.getUser(userId)
                 if (user != null) {
                     currentUser = user
+                    // Seed the form fields with persisted values.
                     uiState = uiState.copy(
                         name = user.name,
                         username = user.username,
@@ -72,11 +87,13 @@ class EditUserViewModel @Inject constructor(
         val email = uiState.email.trim()
         val emailError = validateEmail(email)
         if (name.isBlank() || emailError != null) {
+            // Reject invalid input and surface the validation message.
             uiState = uiState.copy(emailError = emailError)
             return
         }
 
         viewModelScope.launch {
+            // Persist updates while the UI shows a saving state.
             uiState = uiState.copy(isSaving = true)
             val updated = user.copy(
                 name = name,
@@ -86,6 +103,7 @@ class EditUserViewModel @Inject constructor(
             )
             userRepository.updateUser(updated)
             uiState = uiState.copy(isSaving = false)
+            // Signal navigation back to the profile screen.
             _navigation.tryEmit(EditUserNavigation.BackToProfile)
         }
     }
@@ -93,10 +111,12 @@ class EditUserViewModel @Inject constructor(
     fun deleteAccount() {
         val user = currentUser ?: return
         viewModelScope.launch {
+            // Deleting is destructive; keep the UI disabled until complete.
             uiState = uiState.copy(isDeleting = true)
             userRepository.deleteUser(user)
             currentUserStore.clearCurrentUserId()
             uiState = uiState.copy(isDeleting = false)
+            // Navigate away once the account is removed.
             _navigation.tryEmit(EditUserNavigation.BackToProfile)
         }
     }

@@ -22,6 +22,21 @@ import kotlinx.coroutines.launch
 
 /**
  * Manages Edit Post form state, validation, and persistence.
+ *
+ * Data sources:
+ * - Post id: `SavedStateHandle` route argument.
+ * - Post stream: `PostRepository.observePost()`.
+ * - Current user: `CurrentUserStore.currentUserId` + `UserRepository.observeUser()`.
+ *
+ * UI contract:
+ * - Exposes a `StateFlow<EditPostUiState>` with content, ownership, and flags.
+ * - Enables save/delete only when the current user owns the post.
+ *
+ * Internal flow:
+ * 1) Resolve post id, derive `postFlow` to stream the record from Room.
+ * 2) Merge `contentFlow`, flags, user, and post into the UI state.
+ * 3) Initialize the editor content once when the post first arrives.
+ * 4) Persist updates/deletes through the repository and emit navigation events.
  */
 @HiltViewModel
 class EditPostViewModel @Inject constructor(
@@ -32,14 +47,20 @@ class EditPostViewModel @Inject constructor(
 ) : ViewModel() {
     private val postId: Long? = savedStateHandle.get<Long>("postId")
 
+    // Draft content the user edits in the form.
     private val contentFlow = MutableStateFlow("")
+    // Saving flag to disable buttons while an update is in flight.
     private val isSaving = MutableStateFlow(false)
+    // Deleting flag to disable actions while removal is in flight.
     private val isDeleting = MutableStateFlow(false)
 
+    // One-shot navigation events (e.g., pop back) for the UI.
     private val _navigation = MutableSharedFlow<EditPostNavigation>(extraBufferCapacity = 1)
     val navigation = _navigation.asSharedFlow()
 
+    // Cached post entity used for validation and persistence.
     private var currentPost: PostEntity? = null
+    // Prevents overwriting user edits after initial load.
     private var hasInitialized = false
 
     private val currentUserId = currentUserStore.currentUserId
@@ -67,6 +88,7 @@ class EditPostViewModel @Inject constructor(
         currentUser,
         postFlow
     ) { content, saving, deleting, user, post ->
+        // Validate and derive ownership rules on each state update.
         val error = validateContent(content)
         val trimmed = content.trim()
         val isGuest = user == null
@@ -95,9 +117,11 @@ class EditPostViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            // Keep a live pointer to the current post for save/delete actions.
             postFlow.collect { post ->
                 currentPost = post
                 if (post != null && !hasInitialized) {
+                    // Seed the editor once when the post first arrives.
                     contentFlow.value = post.content
                     hasInitialized = true
                 }
@@ -110,6 +134,7 @@ class EditPostViewModel @Inject constructor(
     }
 
     fun saveChanges() {
+        // Ownership + validation guard before hitting the repository.
         val post = currentPost ?: return
         val userId = currentUserId.value ?: return
         if (post.userId != userId) {
@@ -121,6 +146,7 @@ class EditPostViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            // Persist the update and return to the previous screen.
             isSaving.value = true
             try {
                 postRepository.updatePost(
@@ -137,6 +163,7 @@ class EditPostViewModel @Inject constructor(
     }
 
     fun deletePost() {
+        // Ownership guard before hitting the repository.
         val post = currentPost ?: return
         val userId = currentUserId.value ?: return
         if (post.userId != userId) {
@@ -144,6 +171,7 @@ class EditPostViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            // Delete and navigate back when complete.
             isDeleting.value = true
             try {
                 postRepository.deletePost(post.id)

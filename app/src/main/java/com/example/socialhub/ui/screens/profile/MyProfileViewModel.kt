@@ -25,6 +25,7 @@ import retrofit2.HttpException
  *
  * `user == null` means there is no current session.
  * `isLoading` avoids treating the initial DataStore emission as a missing user.
+ * `errorMessage` surfaces non-fatal refresh failures to the UI.
  */
 data class ProfileUiState(
     val user: UserEntity?,
@@ -36,10 +37,19 @@ data class ProfileUiState(
 /**
  * Resolves the current session (DataStore) to a full UserEntity from Room.
  *
- * Responsibilities:
- * - Observe the current user ID from DataStore.
- * - Translate the ID into a Room stream for live updates.
- * - Provide a small `ProfileUiState` for Compose.
+ * Data sources:
+ * - Session: `CurrentUserStore.currentUserId`.
+ * - User record: `UserRepository.observeUser()`.
+ * - Profile posts: `PostRepository.observeByUser()` + refresh.
+ *
+ * UI contract:
+ * - Emits a `StateFlow<ProfileUiState>` for Compose.
+ * - Surfaces `isLoading`/`errorMessage` during refresh.
+ *
+ * Internal flow:
+ * 1) Session id from DataStore selects the user scope.
+ * 2) When present, combine user + posts + flags into UI state.
+ * 3) `onStart` triggers a remote refresh while keeping cached data visible.
  */
 @HiltViewModel
 class MyProfileViewModel @Inject constructor(
@@ -47,7 +57,9 @@ class MyProfileViewModel @Inject constructor(
     private val currentUserStore: CurrentUserStore,
     private val postRepository: PostRepository
 ) : ViewModel() {
+    // Drives the inline loading indicator in the profile UI.
     private val isLoading = MutableStateFlow(false)
+    // Holds the most recent refresh error, if any.
     private val errorMessage = MutableStateFlow<String?>(null)
 
     /**

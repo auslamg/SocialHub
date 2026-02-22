@@ -15,17 +15,23 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /**
- * Orchestrates the Hub feed state by combining timeline posts with user details.
+ * Orchestrates the Hub feed by composing local Room streams with remote refreshes.
  *
- * Responsibilities:
- * - Refresh the timeline on entry (network + Room).
- * - Resolve post authors from cached users (Room) for display.
- * - Expose a stable `StateFlow` for Compose to collect.
+ * Data sources:
+ * - Timeline posts: `PostRepository.observeTimeline()` (Room-backed Flow).
+ * - User cache: `UserRepository.observeUsers()` (Room-backed Flow).
+ * - Current session: `CurrentUserStore.currentUserId` (DataStore Flow).
  *
- * Data flow:
- * - `PostRepository.observeTimeline()` emits whenever posts change in Room.
- * - `UserRepository.observeUsers()` emits whenever user rows change in Room.
- * - `combine` merges both streams and formats UI models.
+ * UI contract:
+ * - Emits a `StateFlow<HubUiState>` that always has a current value for Compose.
+ * - Exposes `isLoading` while refreshing from the network.
+ * - Exposes `errorMessage` when refresh fails (non-fatal; cached data remains).
+ *
+ * Internal flow:
+ * 1) `init` triggers `fetchPosts()` for an initial remote refresh.
+ * 2) `combine` merges posts + users + session + flags into UI models.
+ * 3) User metadata is resolved from the cache; placeholders are used if missing.
+ * 4) The output is stabilized via `stateIn` to prevent null UI states.
  */
 @HiltViewModel
 class HubViewModel @Inject constructor(
@@ -35,14 +41,17 @@ class HubViewModel @Inject constructor(
 ) : ViewModel() {
     // Local loading flag surfaced to the UI alongside the list.
     private val isLoading = MutableStateFlow(true)
+    // Holds the latest non-fatal error message for display.
     private val errorMessage = MutableStateFlow<String?>(null)
 
     /**
      * Stream of Hub UI state.
      *
-     * Notes:
-     * - The list is capped at 20 to match the current feed contract.
-     * - User data is optional; placeholders are used while user lookups complete.
+     * Flow breakdown:
+     * - `posts`: Room-backed list of posts, capped to 20 for the feed contract.
+     * - `users`: cached author details mapped by id for fast lookups.
+     * - `currentUserId`: used to mark edit ownership.
+     * - `isLoading/errorMessage`: driven by the refresh coroutine.
      */
     val uiState: StateFlow<HubUiState> = combine(
         postRepository.observeTimeline(),
@@ -88,8 +97,11 @@ class HubViewModel @Inject constructor(
     /**
      * Refreshes posts from the remote source, persists to Room, then fetches users.
      *
-     * The user fetch is based on distinct userIds present in the refreshed posts.
-     * Errors are swallowed so the UI can continue to render cached data.
+     * Steps:
+     * 1) Set loading = true, clear any prior error message.
+     * 2) Fetch posts from the API and persist to Room.
+     * 3) Fetch distinct authors for the posts to enrich UI cards.
+     * 4) On error: surface the message but keep existing cached content.
      */
     private fun fetchPosts() {
         viewModelScope.launch {
