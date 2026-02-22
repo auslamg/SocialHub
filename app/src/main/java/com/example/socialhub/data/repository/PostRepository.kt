@@ -18,6 +18,8 @@ class PostRepository @Inject constructor(
 
     fun observeByUser(userId: Long): Flow<List<PostEntity>> = postDao.observeByUser(userId)
 
+    fun observePost(postId: Long): Flow<PostEntity?> = postDao.observePost(postId)
+
     suspend fun refreshPosts(limit: Int): List<PostEntity> {
         // Pull the latest feed posts from the API.
         val remotePosts = postApi.getPosts(limit).posts
@@ -60,6 +62,14 @@ class PostRepository @Inject constructor(
             isDraft = false
         )
         postDao.upsert(post)
+    }
+
+    suspend fun updatePost(post: PostEntity) {
+        postDao.update(post)
+    }
+
+    suspend fun deletePost(postId: Long) {
+        postDao.delete(postId)
     }
 
     private fun RemotePostDto.toEntity() = PostEntity(

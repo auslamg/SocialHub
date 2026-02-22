@@ -35,6 +35,7 @@ object AppColors {
 
     val AccentAzure = Color(0xFF3D9BFF)
     val AccentAqua = Color(0xFF4CE0D2)
+    val AccentRed = Color(0xFFE45A5A)
 }
 
 @Composable

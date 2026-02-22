@@ -13,6 +13,7 @@ import com.example.socialhub.ui.components.AppColors
 import com.example.socialhub.ui.screens.hub.HubScreen
 import com.example.socialhub.ui.screens.login.CreateUserScreen
 import com.example.socialhub.ui.screens.post.CreatePostScreen
+import com.example.socialhub.ui.screens.post.EditPostScreen
 import com.example.socialhub.ui.screens.profile.EditUserScreen
 import com.example.socialhub.ui.screens.profile.MyProfileScreen
 import com.example.socialhub.ui.screens.profile.ViewProfileScreen
@@ -29,6 +30,9 @@ sealed class AppDestination(
     data object Search : AppDestination("search", "Search", R.drawable.ic_search)
     data object MyProfile : AppDestination("my_profile", "Profile", R.drawable.ic_profile)
     data object EditUser : AppDestination("edit_user", "Edit", R.drawable.ic_profile)
+    data object EditPost : AppDestination("edit_post/{postId}", "Edit", R.drawable.ic_settings) {
+        fun createRoute(postId: Long): String = "edit_post/$postId"
+    }
     data object ViewProfile : AppDestination("view_profile/{userId}", "Profile", R.drawable.ic_profile) {
         fun createRoute(userId: Long): String = "view_profile/$userId"
     }
@@ -56,6 +60,10 @@ fun SocialHubNavHost(navController: NavHostController) {
         composable(AppDestination.Search.route) { SearchScreen(navController) }
         composable(AppDestination.MyProfile.route) { MyProfileScreen(navController) }
         composable(AppDestination.EditUser.route) { EditUserScreen(navController) }
+        composable(
+            route = AppDestination.EditPost.route,
+            arguments = listOf(navArgument("postId") { type = NavType.LongType })
+        ) { EditPostScreen(navController) }
         composable(
             route = AppDestination.ViewProfile.route,
             arguments = listOf(navArgument("userId") { type = NavType.LongType })

@@ -33,6 +33,9 @@ fun MyProfileScreen(
             navController.navigate(AppDestination.EditUser.route) {
                 launchSingleTop = true
             }
+        },
+        onEditPost = { postId ->
+            navController.navigate(AppDestination.EditPost.createRoute(postId))
         }
     )
 }

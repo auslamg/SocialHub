@@ -28,7 +28,8 @@ fun ProfileContent(
     onLogout: (() -> Unit)?,
     onCreateProfile: (() -> Unit)?,
     onHandleClick: ((Long) -> Unit)?,
-    onEditProfile: (() -> Unit)?
+    onEditProfile: (() -> Unit)?,
+    onEditPost: ((Long) -> Unit)?
 ) {
     AnimatedGradientBackground {
         Column(modifier = Modifier.padding(SocialHubScreenPadding())) {
@@ -126,6 +127,7 @@ fun ProfileContent(
                             avatarUrl = authorAvatar,
                             onHandleClick = handleClick,
                             showEdit = showLogout,
+                            onEditClick = onEditPost?.let { edit -> { edit(post.id) } },
                             modifier = Modifier.fillMaxWidth()
                         )
                     }

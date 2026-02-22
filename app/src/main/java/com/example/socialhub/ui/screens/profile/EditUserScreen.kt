@@ -98,14 +98,14 @@ fun EditUserScreen(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             DarkOutlinedTextField(
                 value = uiState.name,
                 onValueChange = viewModel::onNameChange,
                 label = "Name",
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             DarkOutlinedTextField(
                 value = uiState.email,
                 onValueChange = viewModel::onEmailChange,
@@ -114,14 +114,14 @@ fun EditUserScreen(
                 supportingText = uiState.emailError,
                 isError = uiState.emailError != null
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             DarkOutlinedTextField(
                 value = uiState.avatarUrl,
                 onValueChange = viewModel::onAvatarUrlChange,
                 label = "Avatar URL",
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             DarkOutlinedTextField(
                 value = uiState.bio,
                 onValueChange = viewModel::onBioChange,
@@ -131,7 +131,7 @@ fun EditUserScreen(
             Spacer(modifier = Modifier.height(18.dp))
             Button(
                 onClick = viewModel::saveChanges,
-                colors = ButtonDefaults.buttonColors(containerColor = AppColors.AccentAzure),
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.AccentAqua),
                 shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !uiState.isSaving && uiState.name.isNotBlank() && uiState.emailError == null
@@ -140,8 +140,17 @@ fun EditUserScreen(
             }
             Spacer(modifier = Modifier.height(12.dp))
             Button(
+                onClick = { navController.popBackStack() },
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.PostCardBG),
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Cancel", color = AppColors.WhiteText)
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            Button(
                 onClick = viewModel::deleteAccount,
-                colors = ButtonDefaults.buttonColors(containerColor = AppColors.Gradient2),
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.AccentRed),
                 shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !uiState.isDeleting

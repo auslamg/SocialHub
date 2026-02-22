@@ -68,6 +68,11 @@ fun HubScreen(
                             stamp = post.stamp,
                             avatarUrl = post.avatarUrl,
                             showEdit = post.isOwner,
+                            onEditClick = {
+                                navController.navigate(
+                                    AppDestination.EditPost.createRoute(post.id)
+                                )
+                            },
                             onHandleClick = {
                                 navController.navigate(
                                     AppDestination.ViewProfile.createRoute(post.userId)

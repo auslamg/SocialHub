@@ -107,7 +107,7 @@ fun CreateUserScreen(
                 label = "Name",
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             DarkOutlinedTextField(
                 value = uiState.username,
                 onValueChange = viewModel::onUsernameChange,
@@ -116,7 +116,7 @@ fun CreateUserScreen(
                 supportingText = uiState.usernameError,
                 isError = uiState.usernameError != null
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             DarkOutlinedTextField(
                 value = uiState.email,
                 onValueChange = viewModel::onEmailChange,
@@ -125,14 +125,14 @@ fun CreateUserScreen(
                 supportingText = uiState.emailError,
                 isError = uiState.emailError != null
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             DarkOutlinedTextField(
                 value = uiState.avatarUrl,
                 onValueChange = viewModel::onAvatarUrlChange,
                 label = "Avatar URL",
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             DarkOutlinedTextField(
                 value = uiState.bio,
                 onValueChange = viewModel::onBioChange,

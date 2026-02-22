@@ -57,6 +57,7 @@ class HubViewModel @Inject constructor(
                 val user = userMap[post.userId]
                 val isOwner = currentUserId != null && post.userId == currentUserId
                 HubPost(
+                    id = post.id,
                     userId = post.userId,
                     author = user?.name ?: "User ${post.userId}",
                     handle = user?.username?.let { "@$it" } ?: "@user${post.userId}",
@@ -129,6 +130,7 @@ data class HubUiState(
  * Lightweight view model for a single feed card.
  */
 data class HubPost(
+    val id: Long,
     val userId: Long,
     val author: String,
     val handle: String,
