@@ -7,6 +7,7 @@ import com.example.socialhub.data.remote.dto.RemoteUserDto
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 
 @Singleton
 class UserRepository @Inject constructor(
@@ -32,6 +33,34 @@ class UserRepository @Inject constructor(
     }
 
     suspend fun searchUsers(query: String): List<UserEntity> {
+        val trimmed = query.trim()
+        if (trimmed.isBlank()) {
+            return emptyList()
+        }
+
+        // Local lookup for instant results (cached / user-created).
+        val localResults = fetchLocalUsers(trimmed)
+
+        // Remote lookup for network-backed results (persisted to Room).
+        val remoteResults = fetchRemoteUsers(trimmed)
+        if (remoteResults.isNotEmpty()) {
+            // Persist to DB entities.
+            userDao.upsertAll(remoteResults)
+        }
+
+        // Merge + dedupe by id.
+        return (localResults + remoteResults).distinctBy { it.id }
+    }
+
+    private suspend fun fetchLocalUsers(query: String): List<UserEntity> {
+        return try {
+            userDao.searchByUsername(query.lowercase()).first()
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
+
+    private suspend fun fetchRemoteUsers(query: String): List<UserEntity> {
         return try {
             userApi.searchUsers(query).users.map { remote ->
                 remote.toEntity()
