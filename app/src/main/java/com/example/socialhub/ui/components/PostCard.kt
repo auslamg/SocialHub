@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -34,6 +35,8 @@ fun PostCard(
     author: String,
     handle: String,
     body: String,
+    likeCount: Int = 0,
+    dislikeCount: Int = 0,
     stamp: String,
     avatarUrl: String? = null,
     modifier: Modifier = Modifier
@@ -108,8 +111,34 @@ fun PostCard(
             ) {
                 Text("Reply", fontFamily = FontFamily.Monospace, color = AppColors.LightGreyText)
                 Text("Repost", fontFamily = FontFamily.Monospace, color = AppColors.LightGreyText)
-                Text("Like", fontFamily = FontFamily.Monospace, color = AppColors.LightGreyText)
-                Text("Share", fontFamily = FontFamily.Monospace, color = AppColors.LightGreyText)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_thumbs_up),
+                        contentDescription = "Like",
+                        modifier = Modifier.size(14.dp),
+                        colorFilter = ColorFilter.tint(AppColors.WhiteText)
+                    )
+                    Spacer(modifier = Modifier.size(6.dp))
+                    Text(
+                        text = likeCount.toString(),
+                        fontFamily = FontFamily.Monospace,
+                        color = AppColors.LightGreyText
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_thumbs_down),
+                        contentDescription = "Dislike",
+                        modifier = Modifier.size(14.dp),
+                        colorFilter = ColorFilter.tint(AppColors.WhiteText)
+                    )
+                    Spacer(modifier = Modifier.size(6.dp))
+                    Text(
+                        text = dislikeCount.toString(),
+                        fontFamily = FontFamily.Monospace,
+                        color = AppColors.LightGreyText
+                    )
+                }
             }
         }
     }

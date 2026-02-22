@@ -22,7 +22,7 @@ import com.example.socialhub.data.local.entity.UserEntity
         LikeEntity::class,
         SearchHistoryEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 abstract class SocialHubDatabase : RoomDatabase() {

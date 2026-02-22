@@ -60,6 +60,8 @@ fun HubScreen(
                             author = post.author,
                             handle = post.handle,
                             body = post.body,
+                            likeCount = post.likeCount,
+                            dislikeCount = post.dislikeCount,
                             stamp = post.stamp,
                             avatarUrl = post.avatarUrl,
                             modifier = Modifier.fillMaxWidth()

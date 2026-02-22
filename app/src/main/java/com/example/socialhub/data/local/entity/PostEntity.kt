@@ -15,6 +15,7 @@ data class PostEntity(
     val createdAt: Long,
     val updatedAt: Long?,
     val likeCount: Int,
+    val dislikeCount: Int,
     val commentCount: Int,
     val isDraft: Boolean = false
 )

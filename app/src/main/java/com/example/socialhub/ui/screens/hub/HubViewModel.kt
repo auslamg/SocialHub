@@ -57,6 +57,8 @@ class HubViewModel @Inject constructor(
                     handle = user?.username?.let { "@$it" } ?: "@user${post.userId}",
                     avatarUrl = user?.avatarUrl,
                     body = post.content,
+                    likeCount = post.likeCount,
+                    dislikeCount = post.dislikeCount,
                     stamp = formatStamp(post.createdAt)
                 )
             },
@@ -125,5 +127,7 @@ data class HubPost(
     val handle: String,
     val avatarUrl: String?,
     val body: String,
+    val likeCount: Int,
+    val dislikeCount: Int,
     val stamp: String
 )

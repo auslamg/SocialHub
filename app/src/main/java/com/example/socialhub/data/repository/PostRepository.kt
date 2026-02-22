@@ -24,7 +24,8 @@ class PostRepository @Inject constructor(
                 content = remote.body.trim(),
                 createdAt = now - (index * 60_000L),
                 updatedAt = null,
-                likeCount = 0,
+                likeCount = remote.reactions.likes,
+                dislikeCount = remote.reactions.dislikes,
                 commentCount = 0,
                 isDraft = false
             )
