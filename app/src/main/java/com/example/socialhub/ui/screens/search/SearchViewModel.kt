@@ -57,14 +57,20 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val remoteUsers = userApi.getUsers(limit = 10)
-                val entities = remoteUsers.map { remote ->
+                val entities = remoteUsers.users.map { remote ->
+                    val bio = buildBio(
+                        city = remote.address.city,
+                        country = remote.address.country,
+                        university = remote.university,
+                        companyName = remote.company.name
+                    )
                     UserEntity(
                         id = remote.id,
                         username = remote.username,
-                        name = remote.name,
+                        name = "${remote.firstName} ${remote.lastName}".trim(),
                         email = remote.email,
                         avatarUrl = "https://i.pravatar.cc/150?u=${remote.username}",
-                        bio = null,
+                        bio = bio,
                         followersCount = 0,
                         followingCount = 0,
                         postsCount = 0
@@ -80,6 +86,25 @@ class SearchViewModel @Inject constructor(
     // Called by the TextField on every keystroke.
     fun onQueryChange(value: String) {
         queryFlow.value = value
+    }
+
+    private fun buildBio(
+        city: String,
+        country: String,
+        university: String,
+        companyName: String
+    ): String {
+        val location = listOf(city.trim(), country.trim())
+            .filter { it.isNotBlank() }
+            .joinToString(", ")
+        val lineOne = if (location.isNotBlank() && university.isNotBlank()) {
+            "$location - ${university.trim()}"
+        } else {
+            listOf(location, university.trim()).filter { it.isNotBlank() }.joinToString(" ")
+        }
+        return listOf(lineOne, companyName.trim())
+            .filter { it.isNotBlank() }
+            .joinToString("\n")
     }
 }
 

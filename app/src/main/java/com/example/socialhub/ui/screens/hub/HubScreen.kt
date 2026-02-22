@@ -61,6 +61,7 @@ fun HubScreen(
                             handle = post.handle,
                             body = post.body,
                             stamp = post.stamp,
+                            avatarUrl = post.avatarUrl,
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
