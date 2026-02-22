@@ -2,7 +2,6 @@ package com.example.socialhub.ui.screens.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialhub.data.local.dao.UserDao
 import com.example.socialhub.data.local.entity.UserEntity
 import com.example.socialhub.data.remote.api.UserApi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,15 +11,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flow
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val userDao: UserDao,
     private val userApi: UserApi
 ) : ViewModel() {
     // Raw user input; kept immediate for responsive text field updates.
@@ -37,8 +34,9 @@ class SearchViewModel @Inject constructor(
                 // Empty query -> no results and no DB work.
                 flowOf(emptyList())
             } else {
-                // Prefix search in Room (case-sensitive based on collation).
-                userDao.searchByUsername(trimmed.lowercase())
+                flow {
+                    emit(fetchRemoteUsers(trimmed))
+                }
             }
         }
 
@@ -52,40 +50,36 @@ class SearchViewModel @Inject constructor(
             SearchUiState()
         )
 
-    init {
-        // Fetches a sample of users once when entering the Search screen.
-        viewModelScope.launch {
-            try {
-                val remoteUsers = userApi.getUsers(limit = 10)
-                val entities = remoteUsers.users.map { remote ->
-                    val bio = buildBio(
-                        city = remote.address.city,
-                        country = remote.address.country,
-                        university = remote.university,
-                        companyName = remote.company.name
-                    )
-                    UserEntity(
-                        id = remote.id,
-                        username = remote.username,
-                        name = "${remote.firstName} ${remote.lastName}".trim(),
-                        email = remote.email,
-                        avatarUrl = "https://i.pravatar.cc/150?u=${remote.username}",
-                        bio = bio,
-                        followersCount = 0,
-                        followingCount = 0,
-                        postsCount = 0
-                    )
-                }
-                userDao.upsertAll(entities)
-            } catch (_: Exception) {
-                // Network errors are non-fatal; local search still works.
-            }
-        }
-    }
-
     // Called by the TextField on every keystroke.
     fun onQueryChange(value: String) {
         queryFlow.value = value
+    }
+
+    private suspend fun fetchRemoteUsers(query: String): List<UserEntity> {
+        return try {
+            val remoteUsers = userApi.searchUsers(query)
+            remoteUsers.users.map { remote ->
+                val bio = buildBio(
+                    city = remote.address.city,
+                    country = remote.address.country,
+                    university = remote.university,
+                    companyName = remote.company.name
+                )
+                UserEntity(
+                    id = remote.id,
+                    username = remote.username,
+                    name = "${remote.firstName} ${remote.lastName}".trim(),
+                    email = remote.email,
+                    avatarUrl = "https://i.pravatar.cc/150?u=${remote.username}",
+                    bio = bio,
+                    followersCount = 0,
+                    followingCount = 0,
+                    postsCount = 0
+                )
+            }
+        } catch (_: Exception) {
+            emptyList()
+        }
     }
 
     private fun buildBio(

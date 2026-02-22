@@ -36,8 +36,7 @@ fun SocialHubApp() {
             AppDestination.Trending,
             AppDestination.CreatePost,
             AppDestination.Search,
-            AppDestination.MyProfile,
-            AppDestination.CreateUser
+            AppDestination.MyProfile
         )
         Scaffold(
             modifier = Modifier.fillMaxSize(),

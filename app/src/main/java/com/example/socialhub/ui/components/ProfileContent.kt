@@ -25,7 +25,8 @@ import com.example.socialhub.ui.screens.profile.ProfileUiState
 fun ProfileContent(
     uiState: ProfileUiState,
     showLogout: Boolean,
-    onLogout: (() -> Unit)?
+    onLogout: (() -> Unit)?,
+    onCreateProfile: (() -> Unit)?
 ) {
     AnimatedGradientBackground {
         Column(modifier = Modifier.padding(SocialHubScreenPadding())) {
@@ -65,12 +66,25 @@ fun ProfileContent(
                     }
                 }
             } else if (!uiState.isLoading) {
-                Text(
-                    text = "No profile found.",
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 12.sp,
-                    color = AppColors.ViridianText
+                ProfileHeader(
+                    name = "Your name",
+                    handle = "@guest",
+                    avatarUrl = null,
+                    bio = "Add a bio to introduce yourself.",
+                    postsCount = 0,
+                    followersCount = 0,
+                    followingCount = 0
                 )
+                if (showLogout && onCreateProfile != null) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Button(
+                        onClick = onCreateProfile,
+                        colors = ButtonDefaults.buttonColors(containerColor = AppColors.AccentAzure),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Sign up", color = AppColors.Gradient2)
+                    }
+                }
             }
             Spacer(modifier = Modifier.height(18.dp))
             Text(

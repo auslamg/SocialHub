@@ -10,6 +10,9 @@ interface UserApi {
     @GET("users")
     suspend fun getUsers(@Query("limit") limit: Int = 10): RemoteUsersResponse
 
+    @GET("users/search")
+    suspend fun searchUsers(@Query("q") query: String): RemoteUsersResponse
+
     @GET("users/{id}")
     suspend fun getUser(@Path("id") id: Long): RemoteUserDto
 }

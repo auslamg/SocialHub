@@ -15,6 +15,7 @@ fun ViewProfileScreen(
     ProfileContent(
         uiState = uiState,
         showLogout = false,
-        onLogout = null
+        onLogout = null,
+        onCreateProfile = null
     )
 }
