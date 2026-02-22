@@ -2,6 +2,7 @@ package com.example.socialhub.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,7 @@ fun PostCard(
     dislikeCount: Int = 0,
     stamp: String,
     avatarUrl: String? = null,
+    onHandleClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     // Reusable feed card for posts in Hub/Trending/Profile.
@@ -75,6 +77,11 @@ fun PostCard(
                 }
                 Spacer(modifier = Modifier.size(12.dp))
                 Column {
+                    val handleModifier = if (onHandleClick != null) {
+                        Modifier.clickable { onHandleClick() }
+                    } else {
+                        Modifier
+                    }
                     Text(
                         text = author,
                         fontFamily = FontFamily.Serif,
@@ -84,6 +91,7 @@ fun PostCard(
                     )
                     Text(
                         text = handle,
+                        modifier = handleModifier,
                         fontFamily = FontFamily.Monospace,
                         fontSize = 12.sp,
                         color = AppColors.ViridianText

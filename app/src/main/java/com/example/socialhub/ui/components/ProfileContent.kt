@@ -25,7 +25,8 @@ fun ProfileContent(
     uiState: ProfileUiState,
     showLogout: Boolean,
     onLogout: (() -> Unit)?,
-    onCreateProfile: (() -> Unit)?
+    onCreateProfile: (() -> Unit)?,
+    onHandleClick: ((Long) -> Unit)?
 ) {
     AnimatedGradientBackground {
         Column(modifier = Modifier.padding(SocialHubScreenPadding())) {
@@ -97,6 +98,9 @@ fun ProfileContent(
                 val authorName = uiState.user.name
                 val authorHandle = "@${uiState.user.username}"
                 val authorAvatar = uiState.user.avatarUrl
+                val handleClick = onHandleClick?.let { click ->
+                    { click(uiState.user.id) }
+                }
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(14.dp)) {
                     items(uiState.posts) { post ->
                         PostCard(
@@ -107,6 +111,7 @@ fun ProfileContent(
                             dislikeCount = post.dislikeCount,
                             stamp = formatStamp(post.createdAt),
                             avatarUrl = authorAvatar,
+                            onHandleClick = handleClick,
                             modifier = Modifier.fillMaxWidth()
                         )
                     }

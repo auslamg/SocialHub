@@ -53,6 +53,7 @@ class HubViewModel @Inject constructor(
                 // Resolve author metadata from the cache; fall back to placeholders.
                 val user = userMap[post.userId]
                 HubPost(
+                    userId = post.userId,
                     author = user?.name ?: "User ${post.userId}",
                     handle = user?.username?.let { "@$it" } ?: "@user${post.userId}",
                     avatarUrl = user?.avatarUrl,
@@ -123,6 +124,7 @@ data class HubUiState(
  * Lightweight view model for a single feed card.
  */
 data class HubPost(
+    val userId: Long,
     val author: String,
     val handle: String,
     val avatarUrl: String?,

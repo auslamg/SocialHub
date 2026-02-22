@@ -49,14 +49,14 @@ fun SocialHubNavHost(navController: NavHostController) {
         navController = navController,
         startDestination = AppDestination.Hub.route
     ) {
-        composable(AppDestination.Hub.route) { HubScreen() }
+        composable(AppDestination.Hub.route) { HubScreen(navController) }
         composable(AppDestination.CreatePost.route) { CreatePostScreen() }
         composable(AppDestination.Search.route) { SearchScreen(navController) }
         composable(AppDestination.MyProfile.route) { MyProfileScreen(navController) }
         composable(
             route = AppDestination.ViewProfile.route,
             arguments = listOf(navArgument("userId") { type = NavType.LongType })
-        ) { ViewProfileScreen() }
+        ) { ViewProfileScreen(navController) }
         composable(AppDestination.CreateUser.route) { CreateUserScreen(navController) }
     }
 }

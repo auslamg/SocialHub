@@ -25,6 +25,9 @@ fun MyProfileScreen(
                 launchSingleTop = true
                 popUpTo(AppDestination.MyProfile.route) { inclusive = true }
             }
+        },
+        onHandleClick = { userId ->
+            navController.navigate(AppDestination.ViewProfile.createRoute(userId))
         }
     )
 }

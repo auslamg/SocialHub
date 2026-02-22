@@ -18,13 +18,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.socialhub.ui.SocialHubScreenPadding
 import com.example.socialhub.ui.components.AnimatedGradientBackground
 import com.example.socialhub.ui.components.AppColors
 import com.example.socialhub.ui.components.PostCard
+import com.example.socialhub.ui.navigation.AppDestination
 
 @Composable
 fun HubScreen(
+    navController: NavHostController,
     viewModel: HubViewModel = hiltViewModel()
 ) {
     // Home feed screen that loads posts on entry.
@@ -64,6 +67,11 @@ fun HubScreen(
                             dislikeCount = post.dislikeCount,
                             stamp = post.stamp,
                             avatarUrl = post.avatarUrl,
+                            onHandleClick = {
+                                navController.navigate(
+                                    AppDestination.ViewProfile.createRoute(post.userId)
+                                )
+                            },
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
