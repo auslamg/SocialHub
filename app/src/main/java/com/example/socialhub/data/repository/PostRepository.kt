@@ -46,6 +46,22 @@ class PostRepository @Inject constructor(
         return entities
     }
 
+    suspend fun createLocalPost(userId: Long, content: String) {
+        val now = System.currentTimeMillis()
+        val post = PostEntity(
+            id = now,
+            userId = userId,
+            content = content.trim(),
+            createdAt = now,
+            updatedAt = null,
+            likeCount = 0,
+            dislikeCount = 0,
+            commentCount = 0,
+            isDraft = false
+        )
+        postDao.upsert(post)
+    }
+
     private fun RemotePostDto.toEntity() = PostEntity(
         id = id,
         userId = userId,
