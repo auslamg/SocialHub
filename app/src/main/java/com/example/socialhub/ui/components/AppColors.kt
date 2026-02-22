@@ -18,7 +18,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import kotlin.math.roundToInt
 
-// Centralized palette used across Compose screens.
+/**
+ * Centralized palette used across Compose screens.
+ */
 object AppColors {
     val Gradient1 = Color(0xFF222A3B)
     val Gradient2 = Color(0xFF1D3D59)
@@ -38,6 +40,9 @@ object AppColors {
     val AccentRed = Color(0xFFE45A5A)
 }
 
+/**
+ * Animated gradient background used as the base for app screens.
+ */
 @Composable
 fun AnimatedGradientBackground(
     modifier: Modifier = Modifier,

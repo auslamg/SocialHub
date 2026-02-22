@@ -10,15 +10,24 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
+/**
+ * DataStore-backed store for Auth0 login status and profile metadata.
+ */
 private const val STORE_NAME = "auth0_session_store"
 private val Context.dataStore by preferencesDataStore(name = STORE_NAME)
 private val AUTH_LOGGED_IN = booleanPreferencesKey("auth_logged_in")
 private val AUTH_NAME = stringPreferencesKey("auth_name")
 private val AUTH_EMAIL = stringPreferencesKey("auth_email")
 
+/**
+ * Provides access to Auth0 session details used by the UI.
+ */
 class Auth0SessionStore @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
+    /**
+     * Stream of the current Auth0 session state.
+     */
     val authSession: Flow<AuthSession> = context.dataStore.data.map { prefs ->
         val loggedIn = prefs[AUTH_LOGGED_IN] ?: false
         val name = prefs[AUTH_NAME]
@@ -26,6 +35,9 @@ class Auth0SessionStore @Inject constructor(
         AuthSession(isLoggedIn = loggedIn, name = name, email = email)
     }
 
+    /**
+     * Marks the session as logged in and stores optional name/email.
+     */
     suspend fun setLoggedIn(name: String?, email: String?) {
         context.dataStore.edit { prefs ->
             prefs[AUTH_LOGGED_IN] = true
@@ -42,6 +54,9 @@ class Auth0SessionStore @Inject constructor(
         }
     }
 
+    /**
+     * Clears Auth0 session data and marks the user as logged out.
+     */
     suspend fun clear() {
         context.dataStore.edit { prefs ->
             prefs[AUTH_LOGGED_IN] = false
@@ -51,6 +66,9 @@ class Auth0SessionStore @Inject constructor(
     }
 }
 
+/**
+ * Immutable snapshot of the Auth0 login state.
+ */
 data class AuthSession(
     val isLoggedIn: Boolean,
     val name: String?,

@@ -11,11 +11,17 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Hilt module that provides Room database and DAO instances.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
     @Provides
     @Singleton
+    /**
+     * Creates the single Room database instance for the app process.
+     */
     fun provideDatabase(@ApplicationContext context: Context): SocialHubDatabase {
         // Single database instance for the app process.
         return Room.databaseBuilder(
@@ -28,12 +34,18 @@ object DatabaseModule {
     }
 
     @Provides
+    /**
+     * Provides the `UserDao` for user CRUD and searches.
+     */
     fun provideUserDao(database: SocialHubDatabase): UserDao {
         // DAOs are lightweight; provide directly from Room.
         return database.userDao()
     }
 
     @Provides
+    /**
+     * Provides the `PostDao` for feed/profile CRUD operations.
+     */
     fun providePostDao(database: SocialHubDatabase): PostDao {
         return database.postDao()
     }

@@ -4,6 +4,9 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * Room entity representing a comment on a post.
+ */
 @Entity(
     tableName = "comments",
     indices = [Index("postId"), Index("userId"), Index("createdAt")]

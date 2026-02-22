@@ -31,6 +31,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.socialhub.R
 
+/**
+ * Displays a read-only post card in the feed.
+ */
 @Composable
 fun PostCard(
     author: String,
@@ -66,6 +69,9 @@ fun PostCard(
     }
 }
 
+/**
+ * Post composer card that renders a multi-line text field.
+ */
 @Composable
 fun CreatePostCard(
     author: String,
@@ -104,6 +110,9 @@ fun CreatePostCard(
     }
 }
 
+/**
+ * Shared post layout used by feed and composer cards.
+ */
 @Composable
 private fun PostCardFrame(
     author: String,

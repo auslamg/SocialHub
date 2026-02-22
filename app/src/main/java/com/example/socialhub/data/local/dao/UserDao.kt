@@ -9,6 +9,9 @@ import androidx.room.Update
 import com.example.socialhub.data.local.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Room DAO for user table queries and mutations.
+ */
 @Dao
 interface UserDao {
     // Reactive stream of all users in the local database.

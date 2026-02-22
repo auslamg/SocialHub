@@ -25,6 +25,9 @@ import com.example.socialhub.ui.components.AppColors
 import com.example.socialhub.ui.components.PostCard
 import com.example.socialhub.ui.navigation.AppDestination
 
+/**
+ * Hub feed screen that renders timeline posts and error/loading states.
+ */
 @Composable
 fun HubScreen(
     navController: NavHostController,
@@ -116,7 +119,9 @@ fun HubScreen(
     }
 }
 
-// Simple model used by Hub/Trending to render sample cards.
+/**
+ * Simple model used by Hub/Trending to render sample cards.
+ */
 public data class SamplePost(
     val author: String,
     val handle: String,

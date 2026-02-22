@@ -133,6 +133,9 @@ class EditUserViewModel @Inject constructor(
     }
 }
 
+/**
+ * UI state for the Edit Profile form.
+ */
 data class EditUserUiState(
     val name: String = "",
     val username: String = "",
@@ -144,6 +147,9 @@ data class EditUserUiState(
     val isDeleting: Boolean = false
 )
 
+/**
+ * One-shot navigation events emitted by the Edit Profile screen.
+ */
 enum class EditUserNavigation {
     BackToProfile
 }

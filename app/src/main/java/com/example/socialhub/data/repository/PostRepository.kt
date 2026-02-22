@@ -9,17 +9,32 @@ import javax.inject.Singleton
 import kotlin.random.Random
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Repository for posts, backed by Room and a remote API.
+ */
 @Singleton
 class PostRepository @Inject constructor(
     private val postDao: PostDao,
     private val postApi: PostApi
 ) {
+    /**
+     * Stream of timeline posts for the Hub feed.
+     */
     fun observeTimeline(): Flow<List<PostEntity>> = postDao.observeTimeline()
 
+    /**
+     * Stream of posts for a specific user.
+     */
     fun observeByUser(userId: Long): Flow<List<PostEntity>> = postDao.observeByUser(userId)
 
+    /**
+     * Stream of a single post by id.
+     */
     fun observePost(postId: Long): Flow<PostEntity?> = postDao.observePost(postId)
 
+    /**
+     * Fetches the latest posts from the API and caches them.
+     */
     suspend fun refreshPosts(limit: Int): List<PostEntity> {
         // Pull the latest feed posts from the API.
         val remotePosts = postApi.getPosts(limit).posts
@@ -34,6 +49,9 @@ class PostRepository @Inject constructor(
         return entities
     }
 
+    /**
+     * Fetches posts for a specific user and caches them.
+     */
     suspend fun refreshPostsForUser(userId: Long): List<PostEntity> {
         // Pull profile-specific posts from the API.
         val remotePosts = postApi.getPostsByUser(userId).posts
@@ -48,6 +66,9 @@ class PostRepository @Inject constructor(
         return entities
     }
 
+    /**
+     * Creates a local-only post for the current user.
+     */
     suspend fun createLocalPost(userId: Long, content: String) {
         val now = System.currentTimeMillis()
         val post = PostEntity(
@@ -64,10 +85,16 @@ class PostRepository @Inject constructor(
         postDao.upsert(post)
     }
 
+    /**
+     * Updates a post already stored locally.
+     */
     suspend fun updatePost(post: PostEntity) {
         postDao.update(post)
     }
 
+    /**
+     * Deletes a post by id.
+     */
     suspend fun deletePost(postId: Long) {
         postDao.delete(postId)
     }

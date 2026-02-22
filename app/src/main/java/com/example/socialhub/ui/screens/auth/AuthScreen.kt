@@ -21,6 +21,9 @@ import com.example.socialhub.ui.SocialHubScreenPadding
 import com.example.socialhub.ui.components.AnimatedGradientBackground
 import com.example.socialhub.ui.components.AppColors
 
+/**
+ * Auth screen that shows login/logout controls and session status.
+ */
 @Composable
 fun AuthScreen(
     onLoginClick: () -> Unit,

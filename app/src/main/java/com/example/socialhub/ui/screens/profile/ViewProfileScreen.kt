@@ -8,6 +8,9 @@ import androidx.navigation.NavHostController
 import com.example.socialhub.ui.components.ProfileContent
 import com.example.socialhub.ui.navigation.AppDestination
 
+/**
+ * Screen for viewing another user's profile by id.
+ */
 @Composable
 fun ViewProfileScreen(
     navController: NavHostController,

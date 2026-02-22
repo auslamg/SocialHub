@@ -9,6 +9,9 @@ import androidx.room.Update
 import com.example.socialhub.data.local.entity.LikeEntity
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Room DAO for like table queries and mutations.
+ */
 @Dao
 interface LikeDao {
     // All likes.

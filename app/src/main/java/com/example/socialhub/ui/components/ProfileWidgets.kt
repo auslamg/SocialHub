@@ -29,6 +29,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.socialhub.R
 
+/**
+ * Profile header card with avatar, bio, and stats.
+ */
 @Composable
 fun ProfileHeader(
     name: String,
@@ -109,6 +112,9 @@ fun ProfileHeader(
     }
 }
 
+/**
+ * Compact stat used inside the profile header.
+ */
 @Composable
 private fun ProfileStat(label: String, value: String) {
     // Compact stat used in the profile header row.

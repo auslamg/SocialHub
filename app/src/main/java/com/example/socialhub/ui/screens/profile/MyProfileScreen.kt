@@ -8,6 +8,9 @@ import androidx.navigation.NavHostController
 import com.example.socialhub.ui.components.ProfileContent
 import com.example.socialhub.ui.navigation.AppDestination
 
+/**
+ * Screen for the current user's profile and related actions.
+ */
 @Composable
 fun MyProfileScreen(
     navController: NavHostController,

@@ -38,6 +38,9 @@ import com.example.socialhub.ui.components.AppColors
 import com.example.socialhub.ui.components.DarkOutlinedTextField
 import com.example.socialhub.ui.navigation.AppDestination
 
+/**
+ * Screen for editing the current user's profile details.
+ */
 @Composable
 fun EditUserScreen(
     navController: NavHostController,

@@ -3,6 +3,9 @@ package com.example.socialhub.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+/**
+ * Room entity representing a user profile.
+ */
 @Entity(tableName = "users")
 data class UserEntity(
     @PrimaryKey val id: Long,

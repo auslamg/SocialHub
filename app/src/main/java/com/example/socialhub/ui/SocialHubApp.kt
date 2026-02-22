@@ -25,6 +25,9 @@ import com.example.socialhub.ui.navigation.AppDestination
 import com.example.socialhub.ui.navigation.SocialHubNavHost
 import com.example.socialhub.ui.theme.SocialHubTheme
 
+/**
+ * Root Compose scaffold that hosts navigation and the bottom bar.
+ */
 @Composable
 fun SocialHubApp(
     onLoginClick: () -> Unit,
@@ -101,6 +104,9 @@ fun SocialHubApp(
     }
 }
 
+/**
+ * Shared padding used by screens so content aligns with the nav bar.
+ */
 @Composable
 fun SocialHubScreenPadding(): PaddingValues = PaddingValues(
     // Common in-screen padding to align content across screens.

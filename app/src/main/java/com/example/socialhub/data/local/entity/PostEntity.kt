@@ -4,6 +4,9 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * Room entity representing a post in the feed.
+ */
 @Entity(
     tableName = "posts",
     indices = [Index("userId"), Index("createdAt")]

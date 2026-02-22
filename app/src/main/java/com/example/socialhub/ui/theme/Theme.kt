@@ -34,6 +34,9 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+/**
+ * Material 3 theme wrapper used by the Compose UI.
+ */
 @Composable
 fun SocialHubTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

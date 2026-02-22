@@ -4,6 +4,9 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * Room entity representing a user search entry.
+ */
 @Entity(
     tableName = "search_history",
     indices = [Index(value = ["query"], unique = true)]

@@ -37,6 +37,9 @@ import com.example.socialhub.ui.components.AppColors
 import com.example.socialhub.ui.components.DarkOutlinedTextField
 import com.example.socialhub.ui.navigation.AppDestination
 
+/**
+ * Onboarding screen for creating a local user profile.
+ */
 @Composable
 fun CreateUserScreen(
     navController: NavHostController,

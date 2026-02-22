@@ -33,6 +33,9 @@ import com.example.socialhub.ui.components.AppColors
 import com.example.socialhub.ui.components.DarkOutlinedTextField
 import com.example.socialhub.ui.navigation.AppDestination
 
+/**
+ * Screen for searching users and navigating to their profiles.
+ */
 @Composable
 fun SearchScreen(
     navController: NavHostController,

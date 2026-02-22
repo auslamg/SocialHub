@@ -195,6 +195,9 @@ class EditPostViewModel @Inject constructor(
     }
 }
 
+/**
+ * UI state for the Edit Post screen.
+ */
 data class EditPostUiState(
     val content: String = "",
     val contentError: String? = null,
@@ -211,6 +214,9 @@ data class EditPostUiState(
     val canDelete: Boolean = false
 )
 
+/**
+ * One-shot navigation events emitted by the Edit Post flow.
+ */
 enum class EditPostNavigation {
     Back
 }

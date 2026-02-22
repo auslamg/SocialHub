@@ -26,6 +26,9 @@ import com.example.socialhub.ui.components.AnimatedGradientBackground
 import com.example.socialhub.ui.components.AppColors
 import com.example.socialhub.ui.components.CreatePostCard
 
+/**
+ * Screen for composing a new post, with validation and character count.
+ */
 @Composable
 fun CreatePostScreen(
     viewModel: CreatePostViewModel = hiltViewModel()

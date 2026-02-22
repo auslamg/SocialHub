@@ -16,7 +16,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
-// Main Android entry point. Hilt injects dependencies for composables via ViewModels.
+/**
+ * Main Android entry point that hosts the Compose UI and wires Auth0 login/logout.
+ */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var auth0: Auth0
@@ -24,9 +26,12 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var auth0SessionStore: Auth0SessionStore
 
+    /**
+     * Initializes Auth0 and sets the Compose content tree.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Initialize Auth0
+        // Initialize Auth0 using the configured resources.
         auth0 = Auth0.getInstance(
             getString(R.string.com_auth0_client_id),
             getString(R.string.com_auth0_domain)
@@ -43,6 +48,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Starts the Auth0 WebAuth login flow and updates local session state.
+     */
     private fun login() {
         WebAuthProvider.login(auth0)
             .withScheme("https")
@@ -60,6 +68,9 @@ class MainActivity : ComponentActivity() {
             })
     }
 
+    /**
+     * Starts the Auth0 logout flow and clears local session state.
+     */
     private fun logout() {
         WebAuthProvider.logout(auth0)
             .withScheme("https")

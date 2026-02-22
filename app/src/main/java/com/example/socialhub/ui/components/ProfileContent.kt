@@ -21,6 +21,9 @@ import androidx.compose.ui.unit.sp
 import com.example.socialhub.ui.SocialHubScreenPadding
 import com.example.socialhub.ui.screens.profile.ProfileUiState
 
+/**
+ * Shared profile layout used by both my profile and public profiles.
+ */
 @Composable
 fun ProfileContent(
     uiState: ProfileUiState,
@@ -175,6 +178,9 @@ fun ProfileContent(
     }
 }
 
+/**
+ * Formats a timestamp as a short relative label.
+ */
 private fun formatStamp(createdAt: Long): String {
     val now = System.currentTimeMillis()
     val minutes = ((now - createdAt) / 60_000L).coerceAtLeast(0)

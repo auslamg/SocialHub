@@ -29,6 +29,9 @@ import com.example.socialhub.ui.components.AnimatedGradientBackground
 import com.example.socialhub.ui.components.AppColors
 import com.example.socialhub.ui.components.CreatePostCard
 
+/**
+ * Screen for editing or deleting an existing post.
+ */
 @Composable
 fun EditPostScreen(
     navController: NavHostController,

@@ -9,6 +9,9 @@ import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 
+/**
+ * Repository for user data, backed by Room and a remote API.
+ */
 @Singleton
 class UserRepository @Inject constructor(
     private val userDao: UserDao,
@@ -16,26 +19,50 @@ class UserRepository @Inject constructor(
 ) {
     private val fetchedUserIds = mutableSetOf<Long>()
 
+    /**
+     * Stream of all cached users.
+     */
     fun observeUsers(): Flow<List<UserEntity>> = userDao.observeUsers()
 
+    /**
+     * Stream of a single user by id.
+     */
     fun observeUser(userId: Long): Flow<UserEntity?> = userDao.observeUser(userId)
 
+    /**
+     * Fetches a user snapshot from the local cache.
+     */
     suspend fun getUser(userId: Long): UserEntity? = userDao.observeUser(userId).first()
 
+    /**
+     * Checks if a username is already taken locally.
+     */
     suspend fun existsUsername(username: String): Boolean = userDao.existsUsername(username)
 
+    /**
+     * Inserts or replaces a user record.
+     */
     suspend fun upsertUser(user: UserEntity) {
         userDao.upsert(user)
     }
 
+    /**
+     * Updates an existing user record.
+     */
     suspend fun updateUser(user: UserEntity) {
         userDao.update(user)
     }
 
+    /**
+     * Deletes a user record.
+     */
     suspend fun deleteUser(user: UserEntity) {
         userDao.delete(user)
     }
 
+    /**
+     * Fetches and caches remote users by id, skipping those already fetched.
+     */
     suspend fun fetchUsersByIds(userIds: List<Long>) {
         for (userId in userIds) {
             if (!fetchedUserIds.add(userId)) {
@@ -50,6 +77,9 @@ class UserRepository @Inject constructor(
         }
     }
 
+    /**
+     * Searches users locally and remotely, returning merged results.
+     */
     suspend fun searchUsers(query: String): SearchUsersResult {
         val trimmed = query.trim()
         if (trimmed.isBlank()) {
@@ -133,6 +163,9 @@ class UserRepository @Inject constructor(
     }
 }
 
+/**
+ * Search result payload including any non-fatal error message.
+ */
 data class SearchUsersResult(
     val users: List<UserEntity>,
     val errorMessage: String?

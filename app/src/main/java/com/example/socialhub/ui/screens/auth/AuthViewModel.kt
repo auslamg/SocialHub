@@ -10,10 +10,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
+/**
+ * Exposes Auth0 session state as UI-ready status text.
+ */
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     auth0SessionStore: Auth0SessionStore
 ) : ViewModel() {
+    /**
+     * Reactive auth status used by the Auth screen.
+     */
     val uiState: StateFlow<AuthUiState> = auth0SessionStore.authSession
         .map { session ->
             if (!session.isLoggedIn) {
@@ -39,6 +45,9 @@ class AuthViewModel @Inject constructor(
         )
 }
 
+/**
+ * UI state for auth status and label text.
+ */
 data class AuthUiState(
     val isLoggedIn: Boolean,
     val statusText: String

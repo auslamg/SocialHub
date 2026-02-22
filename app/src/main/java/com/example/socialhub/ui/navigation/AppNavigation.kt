@@ -20,6 +20,9 @@ import com.example.socialhub.ui.screens.profile.MyProfileScreen
 import com.example.socialhub.ui.screens.profile.ViewProfileScreen
 import com.example.socialhub.ui.screens.search.SearchScreen
 
+/**
+ * Navigation destinations for the app. Each entry declares a route and icon.
+ */
 sealed class AppDestination(
     val route: String,
     val label: String,
@@ -33,13 +36,22 @@ sealed class AppDestination(
     data object Auth : AppDestination("auth", "Auth", R.drawable.ic_auth)
     data object EditUser : AppDestination("edit_user", "Edit", R.drawable.ic_profile)
     data object EditPost : AppDestination("edit_post/{postId}", "Edit", R.drawable.ic_settings) {
+        /**
+         * Builds a concrete route string for a post id.
+         */
         fun createRoute(postId: Long): String = "edit_post/$postId"
     }
     data object ViewProfile : AppDestination("view_profile/{userId}", "Profile", R.drawable.ic_profile) {
+        /**
+         * Builds a concrete route string for a user id.
+         */
         fun createRoute(userId: Long): String = "view_profile/$userId"
     }
     data object CreateUser : AppDestination("create_user", "Join", R.drawable.ic_settings)
 
+    /**
+     * Bottom navigation colors for this destination.
+     */
     @Composable
     fun navColors() = NavigationBarItemDefaults.colors(
         selectedIconColor = AppColors.WhiteText,
@@ -50,6 +62,9 @@ sealed class AppDestination(
     )
 }
 
+/**
+ * Central navigation graph for the application.
+ */
 @Composable
 fun SocialHubNavHost(
     navController: NavHostController,

@@ -9,6 +9,9 @@ import androidx.room.Update
 import com.example.socialhub.data.local.entity.CommentEntity
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Room DAO for comment table queries and mutations.
+ */
 @Dao
 interface CommentDao {
     // All comments.

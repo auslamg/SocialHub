@@ -7,6 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
+/**
+ * Reusable outlined text field styled for the app's dark palette.
+ */
 @Composable
 fun DarkOutlinedTextField(
     value: String,

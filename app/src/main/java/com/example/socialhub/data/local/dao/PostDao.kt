@@ -9,6 +9,9 @@ import androidx.room.Update
 import com.example.socialhub.data.local.entity.PostEntity
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Room DAO for post table queries and mutations.
+ */
 @Dao
 interface PostDao {
     // Timeline posts for the home feed.

@@ -9,6 +9,9 @@ import androidx.room.Update
 import com.example.socialhub.data.local.entity.SearchHistoryEntity
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Room DAO for search history queries and mutations.
+ */
 @Dao
 interface SearchHistoryDao {
     // Full search history.

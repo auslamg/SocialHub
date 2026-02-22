@@ -9,18 +9,28 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-// Front-end session store for the currently logged-in user id.
+/**
+ * DataStore-backed session store for the current app user id.
+ */
 private const val STORE_NAME = "current_user_store"
 private val Context.dataStore by preferencesDataStore(name = STORE_NAME)
 private val CURRENT_USER_ID = longPreferencesKey("current_user_id")
 
+/**
+ * Provides read/write access to the current user id used by the UI.
+ */
 class CurrentUserStore @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    // Null means no user is logged in.
+    /**
+     * Stream of the current user id; null means "guest".
+     */
     val currentUserId: Flow<Long?> = context.dataStore.data
         .map { preferences -> preferences[CURRENT_USER_ID] }
 
+    /**
+     * Persists the active user id for fast app startup.
+     */
     suspend fun setCurrentUserId(userId: Long) {
         // Persist current user id for quick app startup lookup.
         context.dataStore.edit { preferences ->
@@ -28,6 +38,9 @@ class CurrentUserStore @Inject constructor(
         }
     }
 
+    /**
+     * Clears the current user id (used on logout).
+     */
     suspend fun clearCurrentUserId() {
         // Clears the session (used for logout).
         context.dataStore.edit { preferences ->
