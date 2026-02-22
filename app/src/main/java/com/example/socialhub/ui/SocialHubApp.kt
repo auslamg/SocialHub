@@ -26,7 +26,10 @@ import com.example.socialhub.ui.navigation.SocialHubNavHost
 import com.example.socialhub.ui.theme.SocialHubTheme
 
 @Composable
-fun SocialHubApp() {
+fun SocialHubApp(
+    onLoginClick: () -> Unit,
+    onLogoutClick: () -> Unit
+) {
     // Top-level theme + navigation scaffold for the entire app.
     SocialHubTheme {
         val navController = rememberNavController()
@@ -35,7 +38,8 @@ fun SocialHubApp() {
             AppDestination.Hub,
             AppDestination.CreatePost,
             AppDestination.Search,
-            AppDestination.MyProfile
+            AppDestination.MyProfile,
+            AppDestination.Auth
         )
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -52,18 +56,19 @@ fun SocialHubApp() {
                         val selected = currentDestination?.hierarchy?.any {
                             it.route == destination.route
                         } == true
+                        val onClick = {
+                            // Single-top keeps one instance per destination in the back stack.
+                            navController.navigate(destination.route) {
+                                launchSingleTop = true
+                                restoreState = true
+                                popUpTo(AppDestination.Hub.route) {
+                                    saveState = true
+                                }
+                            }
+                        }
                         NavigationBarItem(
                             selected = selected,
-                            onClick = {
-                                // Single-top keeps one instance per destination in the back stack.
-                                navController.navigate(destination.route) {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                    popUpTo(AppDestination.Hub.route) {
-                                        saveState = true
-                                    }
-                                }
-                            },
+                            onClick = onClick,
                             icon = {
                                 Icon(
                                     modifier = Modifier.size(22.dp),
@@ -86,7 +91,11 @@ fun SocialHubApp() {
         ) { padding ->
             // Host composable destinations.
             Box(modifier = Modifier.padding(padding)) {
-                SocialHubNavHost(navController = navController)
+                SocialHubNavHost(
+                    navController = navController,
+                    onLoginClick = onLoginClick,
+                    onLogoutClick = onLogoutClick
+                )
             }
         }
     }

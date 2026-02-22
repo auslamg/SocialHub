@@ -19,7 +19,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        manifestPlaceholders["auth0Domain"] = "dev-gn2n1o1su8462o8c.us.auth0.com"
+        manifestPlaceholders["auth0Domain"] = "dev-3g848d4w2n7wjwz0.us.auth0.com"
         manifestPlaceholders["auth0Scheme"] = "com.example.socialhub"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
     implementation(libs.auth0)
+    implementation("com.auth0.android:auth0:3.11.0")
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)

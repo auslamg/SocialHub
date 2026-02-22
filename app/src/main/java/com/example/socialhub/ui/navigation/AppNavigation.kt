@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.socialhub.R
 import com.example.socialhub.ui.components.AppColors
+import com.example.socialhub.ui.screens.auth.AuthScreen
 import com.example.socialhub.ui.screens.hub.HubScreen
 import com.example.socialhub.ui.screens.login.CreateUserScreen
 import com.example.socialhub.ui.screens.post.CreatePostScreen
@@ -29,6 +30,7 @@ sealed class AppDestination(
     data object CreatePost : AppDestination("create_post", "Post", R.drawable.ic_create)
     data object Search : AppDestination("search", "Search", R.drawable.ic_search)
     data object MyProfile : AppDestination("my_profile", "Profile", R.drawable.ic_profile)
+    data object Auth : AppDestination("auth", "Auth", R.drawable.ic_auth)
     data object EditUser : AppDestination("edit_user", "Edit", R.drawable.ic_profile)
     data object EditPost : AppDestination("edit_post/{postId}", "Edit", R.drawable.ic_settings) {
         fun createRoute(postId: Long): String = "edit_post/$postId"
@@ -49,13 +51,23 @@ sealed class AppDestination(
 }
 
 @Composable
-fun SocialHubNavHost(navController: NavHostController) {
+fun SocialHubNavHost(
+    navController: NavHostController,
+    onLoginClick: () -> Unit,
+    onLogoutClick: () -> Unit
+) {
     // Central navigation graph. Keep routes in one place for consistency.
     NavHost(
         navController = navController,
         startDestination = AppDestination.Hub.route
     ) {
         composable(AppDestination.Hub.route) { HubScreen(navController) }
+        composable(AppDestination.Auth.route) {
+            AuthScreen(
+                onLoginClick = onLoginClick,
+                onLogoutClick = onLogoutClick
+            )
+        }
         composable(AppDestination.CreatePost.route) { CreatePostScreen() }
         composable(AppDestination.Search.route) { SearchScreen(navController) }
         composable(AppDestination.MyProfile.route) { MyProfileScreen(navController) }
