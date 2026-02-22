@@ -28,6 +28,11 @@ fun MyProfileScreen(
         },
         onHandleClick = { userId ->
             navController.navigate(AppDestination.ViewProfile.createRoute(userId))
+        },
+        onEditProfile = {
+            navController.navigate(AppDestination.EditUser.route) {
+                launchSingleTop = true
+            }
         }
     )
 }

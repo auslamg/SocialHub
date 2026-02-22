@@ -2,6 +2,7 @@ package com.example.socialhub.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,7 +27,8 @@ fun ProfileContent(
     showLogout: Boolean,
     onLogout: (() -> Unit)?,
     onCreateProfile: (() -> Unit)?,
-    onHandleClick: ((Long) -> Unit)?
+    onHandleClick: ((Long) -> Unit)?,
+    onEditProfile: (() -> Unit)?
 ) {
     AnimatedGradientBackground {
         Column(modifier = Modifier.padding(SocialHubScreenPadding())) {
@@ -57,12 +59,23 @@ fun ProfileContent(
                 )
                 if (showLogout && onLogout != null) {
                     Spacer(modifier = Modifier.height(12.dp))
-                    Button(
-                        onClick = onLogout,
-                        colors = ButtonDefaults.buttonColors(containerColor = AppColors.AccentAzure),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "Log out", color = AppColors.Gradient2)
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Button(
+                            onClick = onLogout,
+                            colors = ButtonDefaults.buttonColors(containerColor = AppColors.AccentAzure),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(text = "Log out", color = AppColors.Gradient2)
+                        }
+                        if (onEditProfile != null) {
+                            Button(
+                                onClick = onEditProfile,
+                                colors = ButtonDefaults.buttonColors(containerColor = AppColors.PostCardBG),
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(text = "Edit", color = AppColors.WhiteText)
+                            }
+                        }
                     }
                 }
             } else if (!uiState.isLoading) {

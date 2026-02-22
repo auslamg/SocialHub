@@ -43,7 +43,74 @@ fun PostCard(
     onHandleClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
-    // Reusable feed card for posts in Hub/Trending/Profile.
+    PostCardFrame(
+        author = author,
+        handle = handle,
+        stamp = stamp,
+        avatarUrl = avatarUrl,
+        likeCount = likeCount,
+        dislikeCount = dislikeCount,
+        onHandleClick = onHandleClick,
+        modifier = modifier
+    ) {
+        Text(
+            text = body,
+            fontFamily = FontFamily.SansSerif,
+            fontSize = 14.sp,
+            color = AppColors.WhiteText
+        )
+    }
+}
+
+@Composable
+fun CreatePostCard(
+    author: String,
+    handle: String,
+    stamp: String,
+    avatarUrl: String? = null,
+    content: String,
+    onContentChange: (String) -> Unit,
+    supportingText: String? = null,
+    isError: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    PostCardFrame(
+        author = author,
+        handle = handle,
+        stamp = stamp,
+        avatarUrl = avatarUrl,
+        likeCount = 0,
+        dislikeCount = 0,
+        onHandleClick = null,
+        modifier = modifier
+    ) {
+        DarkOutlinedTextField(
+            value = content,
+            onValueChange = onContentChange,
+            label = "What's happening?",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp),
+            outlineColor = AppColors.AccentAqua,
+            supportingText = supportingText,
+            isError = isError
+        )
+    }
+}
+
+@Composable
+private fun PostCardFrame(
+    author: String,
+    handle: String,
+    stamp: String,
+    avatarUrl: String?,
+    likeCount: Int,
+    dislikeCount: Int,
+    onHandleClick: (() -> Unit)?,
+    modifier: Modifier = Modifier,
+    bodyContent: @Composable () -> Unit
+) {
+    // Reusable feed card for posts and post creation.
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(18.dp),
@@ -106,19 +173,13 @@ fun PostCard(
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = body,
-                fontFamily = FontFamily.SansSerif,
-                fontSize = 14.sp,
-                color = AppColors.WhiteText
-            )
+            bodyContent()
             Spacer(modifier = Modifier.height(14.dp))
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Reply", fontFamily = FontFamily.Monospace, color = AppColors.LightGreyText)
-                Text("Repost", fontFamily = FontFamily.Monospace, color = AppColors.LightGreyText)
+                Text(" ", fontFamily = FontFamily.Monospace, color = AppColors.LightGreyText)
+                Spacer(modifier = Modifier.weight(1f))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         painter = painterResource(R.drawable.ic_thumbs_up),
@@ -133,6 +194,7 @@ fun PostCard(
                         color = AppColors.LightGreyText
                     )
                 }
+                Spacer(modifier = Modifier.size(16.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         painter = painterResource(R.drawable.ic_thumbs_down),

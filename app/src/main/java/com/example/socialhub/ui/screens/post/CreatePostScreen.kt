@@ -1,14 +1,11 @@
 package com.example.socialhub.ui.screens.post
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -27,8 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.socialhub.ui.SocialHubScreenPadding
 import com.example.socialhub.ui.components.AnimatedGradientBackground
 import com.example.socialhub.ui.components.AppColors
-import com.example.socialhub.ui.components.DarkOutlinedTextField
-import com.example.socialhub.ui.components.ProfileHeader
+import com.example.socialhub.ui.components.CreatePostCard
 
 @Composable
 fun CreatePostScreen(
@@ -58,35 +54,16 @@ fun CreatePostScreen(
             Spacer(modifier = Modifier.height(16.dp))
             val userName = uiState.userName
             val userHandle = uiState.userHandle
-            if (!uiState.isGuest && userName != null && userHandle != null) {
-                ProfileHeader(
-                    name = userName,
-                    handle = userHandle,
-                    avatarUrl = uiState.avatarUrl,
-                    bio = uiState.userBio ?: "",
-                    postsCount = uiState.postsCount,
-                    followersCount = uiState.followersCount,
-                    followingCount = uiState.followingCount
-                )
-            } else {
-                Spacer(
-                    modifier = Modifier
-                        .size(64.dp)
-                        .clip(CircleShape)
-                        .background(AppColors.AccentAzure)
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            DarkOutlinedTextField(
-                value = uiState.content,
-                onValueChange = viewModel::onContentChange,
-                label = "What's happening?",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(240.dp),
-                outlineColor = AppColors.AccentAqua,
+            CreatePostCard(
+                author = if (!uiState.isGuest && userName != null) userName else "Guest",
+                handle = if (!uiState.isGuest && userHandle != null) userHandle else "@guest",
+                stamp = "Draft",
+                avatarUrl = if (uiState.isGuest) null else uiState.avatarUrl,
+                content = uiState.content,
+                onContentChange = viewModel::onContentChange,
                 supportingText = uiState.contentError,
-                isError = uiState.contentError != null
+                isError = uiState.contentError != null,
+                modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(

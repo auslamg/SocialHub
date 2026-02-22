@@ -15,7 +15,8 @@ fun DarkOutlinedTextField(
     modifier: Modifier = Modifier,
     outlineColor: Color = AppColors.LightGreyText,
     supportingText: String? = null,
-    isError: Boolean = false
+    isError: Boolean = false,
+    enabled: Boolean = true
 ) {
     // Styled text field used across forms to keep a consistent dark theme.
     OutlinedTextField(
@@ -23,6 +24,7 @@ fun DarkOutlinedTextField(
         onValueChange = onValueChange,
         label = { Text(label) },
         modifier = modifier,
+        enabled = enabled,
         supportingText = {
             if (!supportingText.isNullOrBlank()) {
                 Text(supportingText)

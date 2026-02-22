@@ -22,6 +22,7 @@ fun ViewProfileScreen(
         onCreateProfile = null,
         onHandleClick = { userId ->
             navController.navigate(AppDestination.ViewProfile.createRoute(userId))
-        }
+        },
+        onEditProfile = null
     )
 }
