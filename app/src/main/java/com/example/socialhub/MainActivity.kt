@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
      */
     private fun login() {
         WebAuthProvider.login(auth0)
-            .withScheme("https")
+            .withScheme(getString(R.string.com_auth0_scheme))
             .withScope("openid profile email offline_access")
             .start(this, object : Callback<Credentials, AuthenticationException> {
                 override fun onSuccess(credentials: Credentials) {
@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
      */
     private fun logout() {
         WebAuthProvider.logout(auth0)
-            .withScheme("https")
+            .withScheme(getString(R.string.com_auth0_scheme))
             .start(this, object : Callback<Void?, AuthenticationException> {
                 override fun onSuccess(result: Void?) {
                     lifecycleScope.launch {
